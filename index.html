@@ -1,0 +1,572 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Audience Archival – Option B</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0&display=swap">
+<style>
+/* Layout: review banner (flow · scenario · live status) above a product frame that mirrors Nightly:
+   dark Capillary sidebar · org top bar · Audience Manager listing · 75% detail drawer (Details / Hierarchy / Exports).
+   Light only, like the product. */
+:root{
+  color-scheme: light;
+  --side-bg:#232323; --side-active:#3b3b3b; --side-text:#e9e9e9; --side-muted:#bdbdbd; --side-rule:#3d3d3d;
+  --page:#ffffff; --surface:#ffffff; --surface-2:#f7f8fa; --surface-3:#f1f2f4; --row-hover:#faf9f5;
+  --border:#e4e6ea; --border-strong:#c9cdd4;
+  --text:#091e42; --text-2:#5e6470; --text-3:#8a919c;
+  --blue:#2466ea; --blue-tint:#ebf0fc;
+  --green:#42b040; --green-hover:#1f9a1d; --green-disabled:#c3e4c2; --green-tint:#edf9ed; --green-border:#b9e3b8; --green-text:#166d14;
+  --red:#c91e27; --red-hover:#b31f23; --red-disabled:#e9a3a6; --red-tint:#fdeeee; --red-border:#f3c3c5; --red-text:#a3161d; --error-text:#d0312d;
+  --amber-bg:#fdf3d6; --amber-border:#f0d989; --amber-text:#7a5a06;
+  --tag-neutral-bg:#ebecf0; --tag-neutral-tx:#42526e;
+  --refresh-bg:#faf8f2;
+  --font:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#eef0f3}
+body{color:var(--text);font-family:var(--font);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+.ms{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:20px;line-height:1;display:inline-block;vertical-align:middle;user-select:none;width:1em;overflow:hidden;flex:0 0 auto}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.wrap{max-width:1560px;margin:0 auto;padding-block:20px 56px;padding-inline:16px}
+@media (min-width:700px){.wrap{padding-inline:24px}}
+
+/* review banner */
+.rb{background:var(--surface);border:1px dashed var(--border-strong);border-radius:8px;padding:14px 18px;margin-bottom:16px;display:grid;gap:12px}
+.rb>*,.rb-top>*,.controls>*{min-width:0}
+.rb-top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-start;justify-content:space-between}
+.rb-label{font-size:10.5px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);margin:0 0 6px}
+.rb-desc{font-size:13px;color:var(--text-2);margin:0;max-width:760px}
+.rb-desc b{color:var(--text);font-weight:500}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--surface-3);border-radius:999px;padding:3px;border:1px solid var(--border)}
+.seg button{border:0;background:none;cursor:pointer;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--text-2);border-radius:999px}
+.seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(9,30,66,.12)}
+.scenario{width:380px;max-width:100%;height:32px;border:1px solid var(--border);border-radius:999px;padding:0 12px;font:inherit;font-size:12.5px;color:var(--text);background:var(--surface)}
+.status{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;border-top:1px solid var(--border);padding-top:10px;font-size:12.5px}
+.status .k{color:var(--text-3);text-transform:uppercase;font-size:10.5px;letter-spacing:.6px;font-weight:500;margin-right:6px}
+.status .v{font-weight:500}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500}
+.pill.idle{background:var(--surface-3);color:var(--text-2)} .pill.ok{background:var(--green-tint);color:var(--green-text)}
+.pill.warn{background:var(--amber-bg);color:var(--amber-text)} .pill.red{background:var(--red-tint);color:var(--red-text)}
+.reset{margin-left:auto;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--text-2);cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+
+/* product frame */
+.frame-scroll{overflow-x:auto;border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(9,30,66,.08)}
+.frame{min-width:1320px;height:920px;display:flex;background:var(--page);position:relative;overflow:hidden}
+.side{width:236px;flex:0 0 auto;background:var(--side-bg);color:var(--side-text);padding:14px 0;display:flex;flex-direction:column}
+.logo{display:flex;align-items:center;justify-content:space-between;padding:0 16px 18px 18px;font-size:19px;letter-spacing:.2px;color:#f4f4f4}
+.logo .mark{display:inline-flex;gap:6px;align-items:center}
+.logo .dot{width:20px;height:20px;border-radius:50%;background:conic-gradient(#f2a33a 0 25%,#5bbe59 0 50%,#2f8fd6 0 75%,#e6533c 0)}
+.nav-i{display:flex;align-items:center;gap:14px;padding:9px 22px;font-size:14px;color:var(--side-text)}
+.nav-i .ms{font-size:19px;color:var(--side-muted)}
+.nav-i.on{background:var(--side-active)}
+.nav-rule{height:1px;background:var(--side-rule);margin:10px 16px}
+.content{flex:1 1 auto;display:flex;flex-direction:column;min-width:0;position:relative}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px 0 26px;gap:10px;flex:0 0 auto}
+.org{font-weight:500;font-size:14px;display:flex;align-items:center;gap:6px}
+.help{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--blue);font-size:13px;font-weight:500;padding-right:16px;border-right:1px solid var(--border)}
+.avatar{width:30px;height:30px;border-radius:8px;background:var(--surface-3);display:grid;place-items:center;font-weight:500;margin-left:12px}
+.page-head{padding:20px 26px 16px;border-bottom:1px solid var(--border)}
+.page-head h1{font-size:18px;font-weight:500;margin:0 0 4px}
+.page-head p{margin:0;font-size:13px;color:var(--text-2)}
+.listing{flex:1 1 auto;overflow-y:auto;padding:20px 26px 26px}
+.l-h2{font-size:20px;font-weight:500;margin:0 0 14px}
+.toolbar,.selbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;min-height:40px;margin-bottom:14px}
+.selbar{border:1px solid var(--border);border-radius:6px;padding:6px 12px;background:var(--surface-2)}
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:4px;height:36px;padding:0 12px;width:300px;color:var(--text-3);background:var(--surface)}
+.search input{border:0;outline:0;font:inherit;flex:1;min-width:0;background:transparent;color:var(--text)}
+.select{height:36px;border:1px solid var(--border);border-radius:4px;padding:0 10px;font:inherit;font-size:13px;background:var(--surface);color:var(--text)}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:4px;border:1px solid transparent;font-weight:500;font-size:14px;cursor:pointer;white-space:nowrap;background:none;color:var(--text)}
+.btn .ms{font-size:18px}
+.btn.primary{background:var(--green);color:#fff}.btn.primary:hover{background:var(--green-hover)}.btn.primary:disabled{background:var(--green-disabled);cursor:not-allowed}
+.btn.danger{background:var(--red);color:#fff}.btn.danger:hover{background:var(--red-hover)}.btn.danger:disabled{background:var(--red-disabled);cursor:not-allowed}
+.btn.secondary{background:var(--surface);border-color:var(--border-strong)}.btn.secondary:hover{background:var(--surface-2)}
+.btn.secondary:disabled{color:var(--text-3);border-color:var(--border);cursor:not-allowed}
+.btn.link{color:var(--blue);padding:0 4px;height:auto}
+.btn.ghost{padding:0 8px}
+.icon-btn{width:34px;height:34px;border-radius:6px;border:0;background:none;color:var(--text);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn:hover{background:var(--surface-3)}
+.table{border:1px solid var(--border);border-radius:6px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:13px;font-weight:500;color:var(--text);background:var(--surface-2);padding:12px 16px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+th .th-sub{display:block;color:var(--text-2);font-weight:400;font-size:12.5px}
+td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:14px}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--row-hover)}
+tr.sel td{background:var(--blue-tint)!important}
+td.cb,th.cb{width:44px;padding-right:0}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);margin:0;cursor:pointer}
+input[type=checkbox]:disabled{cursor:not-allowed}
+.nm{display:flex;align-items:center;gap:12px}
+.nm .grp{font-size:22px;color:var(--text-3)}
+.nm button{border:0;background:none;padding:0;font:inherit;font-weight:500;color:var(--text);cursor:pointer;text-align:left;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nm button:hover{color:var(--blue)}
+.lan{font-size:18px;color:var(--text)}
+.err{color:var(--error-text)}
+.sub2{font-size:13px;color:var(--text-2);margin-top:2px}
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;font-size:12px;border-radius:4px;white-space:nowrap}
+.tag.arc{background:var(--tag-neutral-bg);color:var(--tag-neutral-tx)}
+.tag.use{background:var(--amber-bg);color:var(--amber-text)}
+.tag.will{background:var(--red-tint);color:var(--red-text);font-weight:500}
+.tag.willu{background:var(--green-tint);color:var(--green-text);font-weight:500}
+.tag.view{background:var(--blue-tint);color:var(--blue)}
+.inline-issue{display:flex;gap:10px;align-items:center;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:13px}
+.empty{padding:40px;text-align:center;color:var(--text-2)}
+
+/* tooltip */
+.tipw{position:relative;display:inline-flex}
+.tip{position:absolute;bottom:calc(100% + 8px);left:0;background:#1d2433;color:#fff;font-size:12px;line-height:16px;padding:6px 8px;border-radius:4px;width:max-content;max-width:260px;z-index:40;display:none;font-weight:400;white-space:normal;text-align:left}
+.tip.right{left:auto;right:0}
+.tipw:hover>.tip,.tipw:focus-within>.tip,.tipw:focus>.tip{display:block}
+
+/* drawer */
+.dim{position:absolute;inset:0;background:rgba(30,30,30,.55)}
+.drawer{position:absolute;top:0;right:0;bottom:0;width:75%;background:var(--surface);display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(0,0,0,.18)}
+.d-scroll{flex:1 1 auto;overflow-y:auto;padding:22px 32px 28px}
+.d-top{display:flex;align-items:flex-start;gap:12px}
+.d-title{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap}
+.d-title h2{font-size:26px;font-weight:500;margin:0;letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis}
+.d-actions{margin-left:auto;display:flex;align-items:center;gap:18px}
+.d-export{display:inline-flex;align-items:center;gap:8px;border:0;background:none;font-weight:500;font-size:14.5px;cursor:pointer;color:var(--text)}
+.ext{display:inline-flex;align-items:center;gap:4px;color:var(--blue);font-size:14px;margin:6px 0 10px;border:0;background:none;padding:0;cursor:pointer}
+.updated{font-size:13px;color:var(--text-3);margin:0 0 22px}
+.updated b{color:var(--text);font-weight:400}
+.tabs{display:flex;gap:40px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{padding:10px 0 12px;font-size:15px;font-weight:500;color:var(--text-2);border:0;background:none;border-bottom:3px solid transparent;cursor:pointer;margin-bottom:-1px}
+.tab.active{color:var(--text);border-bottom-color:var(--text)}
+.tab:disabled{cursor:not-allowed;opacity:.5}
+.det-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:36px;align-items:start}
+.parent-chip{display:flex;align-items:center;gap:12px;border:1px dashed var(--border-strong);border-radius:4px;padding:9px 18px;font-size:15px}
+.parent-chip .ms{font-size:20px}
+.and{display:flex;align-items:center;gap:16px;margin:12px 0;font-size:15px}
+.and::before{content:'';width:36px;height:1px;background:var(--border)}
+.and::after{content:'';flex:1;height:1px;background:var(--border)}
+.fbox{border:1px solid var(--border);border-radius:2px}
+.fhead{background:var(--surface-2);padding:18px 30px;font-size:15px;border-bottom:1px solid var(--border)}
+.frow{padding:18px 30px;border-bottom:1px solid var(--border)}
+.frow:last-child{border-bottom:0}
+.frow b{display:block;font-weight:400;font-size:14px;margin-bottom:10px}
+.frow span{color:var(--text-2);font-size:15px}
+.note{display:flex;gap:12px;background:var(--amber-bg);border-radius:6px;padding:14px 18px;margin-top:16px;font-size:13.5px}
+.note .ms{font-size:18px}
+.sum{border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.sum-in{padding:22px 28px}
+.sum h3{font-size:15px;font-weight:500;margin:0 0 20px}
+.sum .n{font-size:18px;font-weight:500;margin:0;font-variant-numeric:tabular-nums}
+.sum .p{font-size:13.5px;color:var(--text-2);margin:2px 0 14px}
+.sum .rule{height:1px;background:var(--border);margin:0 0 24px}
+.sum .more{color:var(--blue);font-size:15px}
+.sum .refresh{background:var(--refresh-bg);padding:18px 28px;display:flex;justify-content:center;gap:10px;font-weight:500;align-items:center}
+.avail{font-size:13px;color:var(--text-2);margin:8px 0 0}
+.avail b{color:var(--text);font-weight:400}
+
+/* hierarchy tab */
+.h-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);min-height:640px}
+.h-left{padding-right:20px;border-right:1px solid var(--border);min-width:0}
+.h-right{padding-left:28px;min-width:0}
+.h-tools{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.h-tools .search{width:auto;flex:1;max-width:340px;height:42px}
+.tree,.tree ul{list-style:none;margin:0;padding:0}
+.tree ul{margin-left:10px;padding-left:22px}
+.tree li{position:relative}
+.tree ul>li::before{content:'';position:absolute;left:-22px;top:0;height:23px;width:18px;border-left:1px solid #9aa0a6;border-bottom:1px solid #9aa0a6}
+.tree ul>li::after{content:'';position:absolute;left:-22px;top:23px;bottom:0;border-left:1px solid #9aa0a6}
+.tree ul>li:last-child::after{display:none}
+.trow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-height:46px;padding:4px 10px 4px 2px;position:relative;border-left:3px solid transparent}
+.trow .caret{width:22px;height:22px;border:0;background:none;padding:0;cursor:pointer;color:var(--text);display:inline-flex;align-items:center;justify-content:center}
+.trow .caret .ms{font-size:24px}
+.trow .caret.leaf{visibility:hidden}
+.trow .tn{border:0;background:none;padding:0;font:inherit;font-size:15px;color:var(--text);cursor:pointer;text-align:left;min-width:0;flex:1 1 160px;word-break:break-word}
+.trow .tn:hover{color:var(--blue)}
+.trow .tags{margin-left:auto;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;flex:0 1 auto;padding-left:8px}
+.trow .tags:empty{display:none}
+.trow.selected{background:var(--blue-tint);border-left-color:var(--blue)}
+.trow.archived .tn{color:var(--text-3)}
+.trow.affect{background:var(--red-tint);border-left-color:var(--red)}
+.trow.affect-u{background:var(--green-tint);border-left-color:var(--green)}
+.trow.match .tn{font-weight:500}
+.fc-title{font-size:15px;color:var(--text-2);margin:2px 0 18px}
+.fc-title b{color:var(--text);font-weight:500}
+.prev h3{font-size:16px;font-weight:500;margin:0 0 12px}
+.banner{display:flex;gap:10px;align-items:flex-start;border-radius:6px;padding:12px 14px;margin-bottom:16px;font-size:14px}
+.banner p{margin:0;flex:1}.banner b{font-weight:500}
+.banner.red{background:var(--red-tint);border:1px solid var(--red-border)}.banner.red .ms{color:var(--red)}
+.banner.amber{background:var(--amber-bg);border:1px solid var(--amber-border)}.banner.amber .ms{color:var(--amber-text)}
+.banner.green{background:var(--green-tint);border:1px solid var(--green-border)}.banner.green .ms{color:var(--green-text)}
+.plist{border:1px solid var(--border);border-radius:6px;margin-bottom:14px}
+.plist h4{margin:0;padding:10px 14px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-2);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.prow{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;font-size:14px}
+.prow:last-child{border-bottom:0}
+.prow .lvl{margin-left:auto;font-size:12px;color:var(--text-3);white-space:nowrap}
+.prow .why{display:block;font-size:12.5px;color:var(--amber-text)}
+.d-foot{border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;gap:12px;background:var(--surface)}
+.d-foot .fnote{flex:1;font-size:13px;color:var(--text-2)}
+
+/* menu, modal, toast */
+.menu{position:fixed;z-index:60;background:var(--surface);border-radius:6px;box-shadow:0 4px 14px rgba(9,30,66,.18);min-width:210px;padding:4px 0}
+.menu button{display:flex;width:100%;gap:10px;align-items:center;padding:9px 14px;border:0;background:none;text-align:left;font-size:14px;color:var(--text);cursor:pointer}
+.menu button .ms{font-size:18px}
+.menu button:hover:not(:disabled){background:var(--surface-2)}
+.menu button:disabled{color:var(--text-3);cursor:not-allowed}
+.menu .tipw{display:flex;width:100%}
+.menu .tip{left:auto;right:calc(100% + 8px);bottom:auto;top:0}
+.overlay{position:fixed;inset:0;background:rgba(9,30,66,.48);display:flex;align-items:center;justify-content:center;z-index:70;padding:16px}
+.modal{width:468px;max-width:100%;background:var(--surface);border-radius:8px;box-shadow:0 12px 32px rgba(9,30,66,.24)}
+.modal header{padding:20px 24px 0;font-size:18px;font-weight:500}
+.mbody{padding:10px 24px 20px;display:grid;gap:12px}
+.mbody p{margin:0}
+.ulist{border:1px solid var(--border);border-radius:6px}
+.urow{padding:10px 14px;border-bottom:1px solid var(--border);display:grid;gap:2px}
+.urow:last-child{border-bottom:0}
+.urow b{font-weight:500}.urow span{font-size:12.5px;color:var(--text-2)}
+.modal footer{display:flex;justify-content:flex-end;gap:12px;padding:14px 24px;border-top:1px solid var(--border)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:6px;display:flex;gap:8px;align-items:center;z-index:80;max-width:calc(100% - 32px)}
+.toast .ms{color:#6fd36d;font-size:18px}
+</style>
+
+<div class="wrap">
+  <section class="rb" aria-label="Prototype controls">
+    <div class="rb-top">
+      <div>
+        <p class="rb-label">Prototype · Option B · matched to Nightly</p>
+        <p class="rb-desc">Audiences in a hierarchy are archived only from the <b>Hierarchy tab</b> with <b>Archive tree</b>. It covers the audience you opened and every audience below it. On the listing, the checkbox and ⋯ Archive are disabled for hierarchy audiences. Standalone audiences archive as usual.</p>
+      </div>
+      <div class="controls">
+        <div class="seg" role="radiogroup" aria-label="Flow" id="flowSeg"></div>
+        <select class="scenario" id="scenario" aria-label="Open an audience"></select>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </section>
+
+  <div class="frame-scroll"><div class="frame">
+    <nav class="side" aria-label="Capillary">
+      <div class="logo"><span class="mark"><span class="dot"></span>capillary</span><span class="ms" style="font-size:18px;color:var(--side-muted)">dock_to_right</span></div>
+      <div class="nav-i"><span class="ms">home</span>Home</div>
+      <div class="nav-i"><span class="ms">auto_awesome</span>aiRA</div>
+      <div class="nav-i"><span class="ms">sell</span>Loyalty</div>
+      <div class="nav-i"><span class="ms">campaign</span>Engage</div>
+      <div class="nav-i"><span class="ms">dashboard</span>Experiences</div>
+      <div class="nav-i"><span class="ms">redeem</span>Rewards</div>
+      <div class="nav-i on"><span class="ms">group</span>Audiences</div>
+      <div class="nav-i"><span class="ms">hub</span>Channels</div>
+      <div class="nav-i"><span class="ms">support_agent</span>Member care</div>
+      <div class="nav-i"><span class="ms">monitoring</span>Insights</div>
+      <div class="nav-rule"></div>
+      <div class="nav-i"><span class="ms">database</span>Data Management</div>
+      <div class="nav-i"><span class="ms">code</span>Extensions</div>
+      <div class="nav-rule"></div>
+      <div class="nav-i"><span class="ms">settings</span>Settings</div>
+    </nav>
+    <div class="content" id="content"></div>
+  </div></div>
+</div>
+<div id="menuRoot"></div><div id="modalRoot"></div><div id="toastRoot"></div>
+
+<script>
+(function(){
+  const LIMIT=200;
+  const F={
+    loyalty:{label:'Loyalty status',value:'loyalty'},
+    tx:{label:'No of transaction',value:'Include customers whose total transaction count is less than equals 1000 In Lifetime'},
+    india:{label:'Country',value:'Include customers whose registered country is India'},
+    uae:{label:'Country',value:'Include customers whose registered country is UAE'},
+    gold:{label:'Tier',value:'Include customers whose current tier is Gold'},
+    app:{label:'App activity',value:'Include customers who opened the app at least once in the last 30 days'},
+    spend:{label:'Total spend',value:'Include customers whose total spend is greater than equals 50,000 In Last 12 months'},
+    city:c=>({label:'City',value:'Include customers whose registered city is '+c}),
+    lapsed:{label:'Last transaction',value:'Include customers whose last transaction was more than 90 days ago'},
+    fraud:{label:'Account status',value:'Exclude customers who are marked as fraud or suspended'},
+    festive:{label:'Purchase window',value:'Include customers who purchased between 20 Oct 2025 and 15 Nov 2025'},
+    email:{label:'Email opt-in',value:'Include customers who have opted in to email'},
+    sms:{label:'SMS opt-in',value:'Include customers who have opted in to SMS'},
+    weekend:{label:'Purchase day',value:'Include customers with at least 3 purchases on Saturday or Sunday In Last 90 days'}
+  };
+  const SEED=[
+    {id:'r1',name:'All loyalty members',method:'Filtered list (Dynamic)',customers:482310,refreshed:'30 Sep 2026 7:26 PM',by:'tejashwini',parent:null,f:[F.loyalty,F.tx]},
+    {id:'g1',name:'Members – India',method:'Filtered list (Dynamic)',customers:268400,refreshed:'30 Sep 2026 7:20 PM',by:'tejashwini',parent:'r1',f:[F.india]},
+    {id:'g2',name:'India – Gold tier',method:'Filtered list (Dynamic)',customers:18240,refreshed:'30 Sep 2026 7:18 PM',by:'Rakesh T',parent:'g1',f:[F.gold]},
+    {id:'g3',name:'Gold – App users',method:'Filtered list (Dynamic)',customers:6223,refreshed:'30 Sep 2026 7:02 PM',by:'Rakesh T',parent:'g2',f:[F.app]},
+    {id:'g4',name:'Gold – High spenders',method:'Filtered list (Dynamic)',customers:4180,refreshed:'30 Sep 2026 6:58 PM',by:'Aman G',parent:'g2',f:[F.spend]},
+    {id:'g5',name:'High spenders – Mumbai',method:'Filtered list (Dynamic)',customers:1320,refreshed:'30 Sep 2026 6:50 PM',by:'Aman G',parent:'g4',f:[F.city('Mumbai')],inUse:{kind:'Journey',name:'Gold renewal nudges'}},
+    {id:'g6',name:'High spenders – Delhi',method:'Filtered list (Dynamic)',customers:1104,refreshed:'30 Sep 2026 6:50 PM',by:'Aman G',parent:'g4',f:[F.city('Delhi')]},
+    {id:'g7',name:'High spenders – Bengaluru',method:'Filtered list (Dynamic)',customers:980,refreshed:'12 Aug 2026 4:10 PM',by:'Aman G',parent:'g4',f:[F.city('Bengaluru')],archived:true},
+    {id:'g8',name:'Copy of High spenders – Delhi',method:'Filtered list (Dynamic)',customers:1104,refreshed:'30 Sep 2026 6:51 PM',by:'Aman G',parent:'g4',f:[F.city('Delhi'),F.app]},
+    {id:'g9',name:'India – Lapsed 90 days',method:'Filtered list (Dynamic)',customers:41022,refreshed:'29 Sep 2026 9:12 PM',by:'Rakesh T',parent:'g1',f:[F.lapsed]},
+    {id:'h1',name:'Exclude fraud & suspended',method:'Filtered list (Dynamic)',customers:512800,refreshed:'30 Sep 2026 7:10 PM',by:'Sairam A',parent:null,f:[F.fraud]},
+    {id:'h2',name:'Festive buyers 2025',method:'Filtered list (Dynamic)',customers:63400,refreshed:'29 Sep 2026 8:00 PM',by:'Sairam A',parent:'h1',f:[F.festive]},
+    {id:'h3',name:'Festive – Email opt-in',method:'Filtered list (Dynamic)',customers:38120,refreshed:'12 Jan 2026 1:00 PM',by:'Sairam A',parent:'h2',f:[F.email],archived:true},
+    {id:'h4',name:'Festive – SMS opt-in',method:'Filtered list (Dynamic)',customers:29870,refreshed:'29 Sep 2026 8:02 PM',by:'Sairam A',parent:'h2',f:[F.sms]},
+    {id:'h5',name:'Weekend shoppers',method:'Filtered list (Dynamic)',customers:120330,refreshed:'28 Sep 2026 6:40 PM',by:'Madhurima B',parent:'h1',f:[F.weekend],inUse:{kind:'Loyalty promotion',name:'Double points weekend'}},
+    {id:'k1',name:'Lapsed members 2024',method:'Filtered list (Dynamic)',customers:88010,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:null,f:[F.lapsed],archived:true},
+    {id:'k2',name:'Lapsed 2024 – Gold',method:'Filtered list (Dynamic)',customers:6120,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k1',f:[F.gold],archived:true},
+    {id:'k3',name:'Lapsed 2024 – Silver',method:'Filtered list (Dynamic)',customers:21400,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k1',f:[{label:'Tier',value:'Include customers whose current tier is Silver'}],archived:true},
+    {id:'k4',name:'Silver – SMS opt-in',method:'Filtered list (Dynamic)',customers:9870,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k3',f:[F.sms],archived:true},
+    {id:'s1',name:'Diwali split – Test',method:'Split list',customers:89,refreshed:'30 Sep 2026 7:24 PM',by:'Migration Managers',parent:null,f:[]},
+    {id:'s2',name:'Diwali split – Control',method:'Split list',customers:87,refreshed:'30 Sep 2026 7:24 PM',by:'Migration Managers',parent:null,f:[]},
+    {id:'s3',name:'Store walk-ins – September',method:'Filtered list (Dynamic)',customers:22870,refreshed:'30 Sep 2026 6:43 PM',by:'Amogh R',parent:null,f:[{label:'Store visits',value:'Include customers with at least 1 store visit In Sep 2026'}]},
+    {id:'s4',name:'VIP preview list',method:'Filtered list (Static)',customers:1200,refreshed:'30 Sep 2026 6:11 PM',by:'engageAutomationUser',parent:null,f:[F.spend],inUse:{kind:'Campaign',name:'VIP preview – October'}},
+    {id:'s5',name:'Realtime cart abandoners',method:'Filtered list (Static)',customers:null,refreshed:'30 Sep 2026 6:11 PM',by:'engageAutomationUser',parent:null,f:[]},
+    {id:'s6',name:'Summer sale 2025',method:'Filtered list (Static)',customers:72000,refreshed:'30 Jun 2025 9:00 AM',by:'Amogh R',parent:null,f:[],archived:true}
+  ];
+  const ORDER=['r1','s1','s2','g1','g2','s3','g3','g4','h1','g5','g6','g8','s4','h2','h4','h5','g9','s5','g7','h3','k1','k2','k3','k4','s6'];
+  const SCEN=[
+    ['h2','Festive buyers 2025 · clean branch, 1 child already archived'],
+    ['g3','Gold – App users · leaf audience'],
+    ['g4','Gold – High spenders · a child is used in a journey'],
+    ['g1','Members – India · deep branch, blocked by a journey'],
+    ['h1','Exclude fraud & suspended · top level, blocked by a promotion'],
+    ['k1','Lapsed members 2024 · archived top level (unarchive)'],
+    ['k3','Lapsed 2024 – Silver · archived, parent still archived'],
+    ['h3','Festive – Email opt-in · archived child, parent active']
+  ];
+  const TOTAL=7992312;
+  const HT_A='Part of a hierarchy. Archive it from its Hierarchy tab.';
+  const HT_U='Part of a hierarchy. Unarchive it from its Hierarchy tab.';
+
+  let data;
+  const S={flow:'listing',view:'active',sel:new Set(),search:'',open:null,tab:'hierarchy',node:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''};
+  function reset(){data=SEED.map(a=>Object.assign({archived:false,inUse:null},a));Object.assign(S,{flow:'listing',view:'active',sel:new Set(),search:'',open:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''});}
+
+  const by=id=>data.find(a=>a.id===id);
+  const kids=id=>data.filter(a=>a.parent===id);
+  const inH=a=>!!a.parent||kids(a.id).length>0;
+  const root=a=>{while(a.parent)a=by(a.parent);return a};
+  const depth=a=>{let d=1;while(a.parent){a=by(a.parent);d++}return d};
+  const below=id=>{const o=[];const w=x=>kids(x).forEach(k=>{o.push(k.id);w(k.id)});w(id);return o};
+  const fmt=n=>n==null?'':n.toLocaleString('en-US');
+  const pl=(n,a,b)=>n+' '+(n===1?a:b);
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  function plan(){
+    const a=by(S.open), all=[a.id].concat(below(a.id));
+    if(!a.archived){const ids=all.filter(id=>!by(id).archived);return{mode:'archive',ids,skipped:all.filter(id=>by(id).archived),blocked:ids.filter(id=>by(id).inUse)};}
+    const p=a.parent&&by(a.parent);
+    return{mode:'unarchive',ids:all.filter(id=>by(id).archived),skipped:[],blocked:[],parentArchived:!!(p&&p.archived),parent:p&&p.id};
+  }
+
+  // ── banner ──
+  function banner(){
+    const flows=[['listing','Listing'],['detail','Detail · Hierarchy tab'],['archived','Archived listing']];
+    const seg=document.getElementById('flowSeg');
+    const cur=S.open?'detail':S.flow;
+    seg.innerHTML=flows.map(f=>'<button type="button" role="radio" aria-checked="'+(cur===f[0])+'" class="'+(cur===f[0]?'on':'')+'" data-f="'+f[0]+'">'+f[1]+'</button>').join('');
+    seg.querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.f));
+    const sc=document.getElementById('scenario');
+    sc.innerHTML='<option value="">Open an audience…</option>'+SCEN.map(s=>'<option value="'+s[0]+'"'+(S.open===s[0]?' selected':'')+'>'+esc(s[1])+'</option>').join('');
+    sc.onchange=()=>{if(sc.value)openA(sc.value,'hierarchy')};
+    let where,selTxt='None',pill=['idle','Nothing selected'];
+    if(S.open){
+      const a=by(S.open),p=plan();
+      where='Detail drawer · '+S.tab[0].toUpperCase()+S.tab.slice(1)+' tab'+(S.preview?' · preview':'');
+      selTxt=inH(a)?a.name+(p.ids.length>1?' + '+pl(p.ids.length-1,'audience','audiences')+' below':''):a.name;
+      if(!inH(a)) pill=['idle','Standalone audience · use ⋯ to archive'];
+      else if(p.mode==='archive') pill=p.blocked.length?['warn','Archive tree blocked · '+pl(p.blocked.length,'audience','audiences')+' in use']:S.preview?['red',pl(p.ids.length,'audience','audiences')+' will be archived']:['ok','Archive tree available'];
+      else pill=p.parentArchived?['warn','Unarchive tree blocked · parent is archived']:S.preview?['ok',pl(p.ids.length,'audience','audiences')+' will be unarchived']:['ok','Unarchive tree available'];
+    } else {
+      where=S.view==='archived'?'Archived listing':'Listing';
+      if(S.rowMenu){const a=by(S.rowMenu);selTxt=a.name+' (⋯ menu)';pill=inH(a)?['warn',(S.view==='archived'?'Unarchive':'Archive')+' disabled · part of a hierarchy']:(a.inUse&&S.view!=='archived')?['warn','Archive disabled · in use']:['ok',(S.view==='archived'?'Unarchive':'Archive')+' available'];}
+      else if(S.sel.size){selTxt=[...S.sel].map(id=>by(id).name).join(', ');const bl=S.view!=='archived'&&[...S.sel].some(id=>by(id).inUse);pill=bl?['warn','Archive disabled · in use']:['ok','Ready to '+(S.view==='archived'?'unarchive ':'archive ')+pl(S.sel.size,'audience','audiences')];}
+    }
+    document.getElementById('status').innerHTML='<span><span class="k">You are on</span><span class="v">'+esc(where)+'</span></span><span><span class="k">Current selection</span><span class="v">'+esc(selTxt)+'</span></span><span class="pill '+pill[0]+'">'+esc(pill[1])+'</span><button class="reset" type="button" id="resetBtn"><span class="ms" style="font-size:16px">restart_alt</span>Reset data</button>';
+    document.getElementById('resetBtn').onclick=()=>{reset();render();toast('Sample data reset','restart_alt')};
+  }
+  function go(f){closeMenu();S.preview=false;S.rowMenu=null;S.sel=new Set();
+    if(f==='listing'){S.flow='listing';S.view='active';S.open=null}
+    else if(f==='archived'){S.flow='archived';S.view='archived';S.open=null}
+    else openA(S.open||'h2','hierarchy');
+    render();}
+  function openA(id,tab){closeMenu();S.open=id;S.node=id;S.tab=tab;S.preview=false;S.rowMenu=null;S.treeQ='';S.view=by(id).archived?'archived':'active';S.flow=S.view==='archived'?'archived':'listing';render();}
+  function closeA(){S.open=null;S.preview=false;render();}
+
+  // ── listing ──
+  function listing(){
+    const av=S.view==='archived', verb=av?'Unarchive':'Archive';
+    let rows=ORDER.map(by).filter(a=>a.archived===av);
+    if(S.search) rows=rows.filter(a=>a.name.toLowerCase().includes(S.search.toLowerCase()));
+    const selectable=rows.filter(a=>!inH(a)), all=selectable.length&&selectable.every(a=>S.sel.has(a.id));
+    let h='<div class="topbar"><span class="org">CLIENT_MERGE&amp;MERGE <span class="ms" style="font-size:18px">expand_more</span></span><span class="help"><span class="ms" style="font-size:18px">help</span>Help</span><span class="avatar">A</span></div>'+
+      '<div class="page-head"><h1>Audience Manager</h1><p>Build and manage reusable customer groups to target across campaigns</p></div><div class="listing"><h2 class="l-h2">'+(av?'Archived audiences':'Audience')+'</h2>';
+    if(S.sel.size){
+      const iu=av?[]:[...S.sel].filter(id=>by(id).inUse);
+      h+='<div class="selbar" role="region" aria-label="Bulk actions"><span style="font-weight:500">'+pl(S.sel.size,'audience','audiences')+' selected</span><span class="sub2" style="margin:0">'+S.sel.size+' / '+LIMIT+' max</span><span class="spacer"></span>'+
+        (iu.length?'<span class="tipw" tabindex="0"><button class="btn secondary" disabled type="button"><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button><span class="tip right" role="tooltip">Deselect audiences that are in use to archive the rest.</span></span>':'<button class="btn secondary" id="bulkGo" type="button"><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button>')+
+        '<button class="btn ghost" id="clearSel" type="button" style="color:var(--text-2)"><span class="ms">close</span>Clear</button></div>';
+      iu.forEach(id=>{const a=by(id);h+='<div class="inline-issue"><span class="ms" style="color:var(--amber-text);font-size:18px">block</span><span><b style="font-weight:500">'+esc(a.name)+'</b> is used in the '+a.inUse.kind.toLowerCase()+' <b style="font-weight:500">'+esc(a.inUse.name)+'</b>. Deselect it, or archive it once it’s no longer in use.</span></div>'});
+    } else {
+      h+='<div class="toolbar"><label class="search"><span class="ms" style="font-size:20px">search</span><input id="searchIn" type="search" placeholder="Search audiences" aria-label="Search audiences" value="'+esc(S.search)+'"></label>'+
+        '<select class="select" id="statusSel" aria-label="Status"><option value="active"'+(av?'':' selected')+'>Active</option><option value="archived"'+(av?' selected':'')+'>Archived</option></select><span class="spacer"></span>'+
+        (av?'':'<button class="btn primary" type="button" data-na>Create audience</button>')+'</div>';
+    }
+    if(!rows.length) return h+'<div class="table"><div class="empty">'+(av?'No archived audiences.':'No audiences match your search.')+'</div></div></div>';
+    h+='<div class="table"><table><thead><tr><th class="cb"><span class="tipw"><input type="checkbox" id="headCb" aria-label="Select all standalone audiences"'+(all?' checked':'')+'><span class="tip" role="tooltip">Selects standalone audiences only. Audiences in a hierarchy are skipped.</span></span></th><th style="width:34%">Name</th><th>No of customers <span class="ms" style="font-size:16px;color:var(--text-3)">unfold_more</span></th><th>Creation method</th><th>Last refreshed <span class="ms" style="font-size:16px;color:var(--text-3)">info</span><span class="th-sub">Created by</span></th><th style="width:60px"></th></tr></thead><tbody>';
+    rows.forEach(a=>{const hh=inH(a),s=S.sel.has(a.id);
+      h+='<tr class="'+(s?'sel':'')+'"><td class="cb">'+(hh?'<span class="tipw" tabindex="0"><input type="checkbox" disabled aria-label="'+esc(a.name)+' can’t be selected here"><span class="tip" role="tooltip">'+(av?HT_U:HT_A)+'</span></span>':'<input type="checkbox" class="rowCb" data-id="'+a.id+'" aria-label="Select '+esc(a.name)+'"'+(s?' checked':'')+'>')+'</td>'+
+        '<td><div class="nm"><span class="ms grp">group</span><button type="button" data-open="'+a.id+'" title="'+esc(a.name)+'">'+esc(a.name)+'</button>'+(hh?'<span class="tipw" tabindex="0"><span class="ms lan" aria-label="Part of a hierarchy">lan</span><span class="tip" role="tooltip">Part of a hierarchy</span></span>':'')+(a.archived?'<span class="tag arc">Archived</span>':'')+'</div></td>'+
+        '<td>'+(a.customers==null?'<span class="err">Error</span>':fmt(a.customers))+'</td><td>'+a.method+'</td><td><div>'+a.refreshed+'</div><div class="sub2">'+esc(a.by)+'</div></td>'+
+        '<td><button class="icon-btn rowMenu" type="button" data-id="'+a.id+'" aria-label="Actions for '+esc(a.name)+'" aria-haspopup="menu"><span class="ms">more_horiz</span></button></td></tr>';});
+    return h+'</tbody></table></div></div>';
+  }
+  function wireListing(r){
+    const av=S.view==='archived';
+    r.querySelectorAll('.rowCb').forEach(cb=>cb.onchange=()=>{cb.checked?S.sel.add(cb.dataset.id):S.sel.delete(cb.dataset.id);S.rowMenu=null;render()});
+    const hc=r.querySelector('#headCb');
+    if(hc){const sel=ORDER.map(by).filter(a=>a.archived===av&&!inH(a));const some=sel.some(a=>S.sel.has(a.id)),all=sel.length&&sel.every(a=>S.sel.has(a.id));hc.indeterminate=some&&!all;hc.onchange=()=>{all?sel.forEach(a=>S.sel.delete(a.id)):sel.forEach(a=>S.sel.add(a.id));S.rowMenu=null;render()}}
+    r.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openA(b.dataset.open,inH(by(b.dataset.open))?'hierarchy':'details'));
+    r.querySelectorAll('.rowMenu').forEach(b=>b.onclick=e=>{e.stopPropagation();rowMenu(b.dataset.id)});
+    r.querySelectorAll('[data-na]').forEach(b=>b.onclick=()=>toast('Not part of this prototype','info'));
+    const g=r.querySelector('#bulkGo');if(g)g.onclick=()=>confirmFlat([...S.sel],av?'unarchive':'archive');
+    const c=r.querySelector('#clearSel');if(c)c.onclick=()=>{S.sel.clear();render()};
+    const ss=r.querySelector('#statusSel');if(ss)ss.onchange=()=>go(ss.value==='archived'?'archived':'listing');
+    const si=r.querySelector('#searchIn');if(si)si.oninput=()=>{S.search=si.value;render();const n=document.getElementById('searchIn');n.focus();n.setSelectionRange(n.value.length,n.value.length)};
+  }
+  function closeMenu(){document.getElementById('menuRoot').innerHTML=''}
+  function placeMenu(btn,html){const r=btn.getBoundingClientRect();const m=document.getElementById('menuRoot');m.innerHTML='<div class="menu" role="menu" style="top:'+(r.bottom+4)+'px;left:'+Math.max(16,r.right-224)+'px">'+html+'</div>';return m}
+  function rowMenu(id){
+    const a=by(id),av=S.view==='archived',verb=av?'Unarchive':'Archive';
+    S.rowMenu=id;S.sel.clear();render();
+    const block=inH(a)?(av?HT_U:HT_A):(!av&&a.inUse?'Used in the '+a.inUse.kind.toLowerCase()+' '+a.inUse.name+'. You can archive it once it’s no longer in use.':null);
+    const m=placeMenu(document.querySelector('.rowMenu[data-id="'+id+'"]'),
+      '<button role="menuitem" type="button" data-a="view"><span class="ms">visibility</span>View</button>'+(av?'':'<button role="menuitem" type="button" data-a="x"><span class="ms">content_copy</span>Duplicate</button><button role="menuitem" type="button" data-a="x"><span class="ms">ios_share</span>Export</button>')+
+      (block?'<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled aria-disabled="true"><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button><span class="tip" role="tooltip">'+esc(block)+'</span></span>':'<button role="menuitem" type="button" data-a="go"><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button>'));
+    m.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{closeMenu();const x=b.dataset.a;if(x==='view')openA(id,inH(a)?'hierarchy':'details');else if(x==='go')confirmFlat([id],av?'unarchive':'archive');else toast('Not part of this prototype','info')});
+    const f=m.querySelector('[data-a="go"]')||m.querySelector('.tipw');if(f)f.focus();
+  }
+  document.addEventListener('click',e=>{if(!e.target.closest('.menu'))closeMenu()});
+  window.addEventListener('scroll',closeMenu,true);
+
+  // ── drawer ──
+  function filterBox(a){
+    return '<div class="fbox"><div class="fhead">All customers</div>'+(a.f.length?a.f.map(x=>'<div class="frow"><b>'+esc(x.label)+'</b><span>'+esc(x.value)+'</span></div>').join(''):'<div class="frow"><span>No filter conditions. This list was created by splitting another audience.</span></div>')+'</div>';
+  }
+  function drawer(){
+    const a=by(S.open),hh=inH(a);
+    let h='<div class="dim" id="dim"></div><aside class="drawer" role="dialog" aria-label="'+esc(a.name)+'"><div class="d-scroll">'+
+      '<div class="d-top"><div><div class="d-title"><h2>'+esc(a.name)+'</h2><span class="ms" style="font-size:22px">edit</span>'+(a.archived?'<span class="tag arc">Archived</span>':'')+'</div>'+
+      '<button class="ext" type="button" data-na><span class="ms" style="font-size:18px">add</span>Add external ID</button><p class="updated">Last updated: <b>Oct 1, 2026 by tejashwini</b></p></div>'+
+      '<div class="d-actions"><button class="d-export" type="button" data-na><span class="ms" style="font-size:22px">open_in_new</span>Export</button><button class="icon-btn" id="kebab" type="button" aria-label="More actions" aria-haspopup="menu"><span class="ms">more_horiz</span></button><button class="icon-btn" id="closeBtn" type="button" aria-label="Close"><span class="ms" style="font-size:26px">close</span></button></div></div>'+
+      '<div class="tabs" role="tablist">'+['details','hierarchy','exports'].filter(t=>t!=='hierarchy'||hh).map(t=>'<button type="button" role="tab" class="tab'+(S.tab===t?' active':'')+'" aria-selected="'+(S.tab===t)+'" data-tab="'+t+'"'+(S.preview&&S.tab!==t?' disabled':'')+'>'+t[0].toUpperCase()+t.slice(1)+'</button>').join('')+'</div>';
+    if(S.tab==='details'){
+      const p=a.parent&&by(a.parent);
+      h+='<div class="det-grid"><div>'+(p?'<div class="parent-chip"><span class="ms">lan</span>'+esc(p.name)+'</div><div class="and">AND</div>':'')+filterBox(a)+
+        '<div class="note"><span class="ms">info</span><div><b style="font-weight:500">Note:</b><br>Messages will be sent to all customers. NDNC data for mobile numbers is maintained by Telecom Operators and is not shared with third party. Operators can block the message at their level.</div></div></div>'+
+        '<div><div class="sum"><div class="sum-in"><h3>Summary</h3><p class="n">'+(a.customers==null?'—':fmt(a.customers))+'</p><p class="p">'+(a.customers==null?'Audience in error':(a.customers/TOTAL*100).toFixed(2)+'% of total customers')+'</p><div class="rule"></div><span class="more">Show more</span></div><div class="refresh"><span class="ms" style="font-size:18px">sync</span>Refresh now</div></div><p class="avail">Data available till <b>05 Sep 2026 1:39 AM UTC+08:00</b>.</p></div></div>';
+    } else if(S.tab==='exports'){ h+='<div class="empty">No exports yet. Exports you create for this audience show up here.</div>'; }
+    else h+=hierarchy(a);
+    h+='</div>';
+    if(S.tab==='hierarchy'&&S.preview) h+=footer();
+    return h+'</aside>';
+  }
+  function hierarchy(a){
+    const p=plan(),r=root(a),arch=p.mode==='archive';
+    const aff=new Set(S.preview?p.ids:[]), sub=new Set(below(a.id));
+    const q=S.treeQ.trim().toLowerCase();
+    const visible=id=>{if(!q)return true;const n=by(id);return n.name.toLowerCase().includes(q)||below(id).some(x=>by(x).name.toLowerCase().includes(q))};
+    let tree='';
+    const walk=n=>{
+      if(!visible(n.id))return '';
+      const ks=kids(n.id), open=!S.collapsed.has(n.id)||S.preview||q;
+      let cls='trow'+(!S.preview&&n.id===S.node?' selected':'')+(n.archived?' archived':'')+(aff.has(n.id)?(arch?' affect':' affect-u'):'')+(q&&n.name.toLowerCase().includes(q)?' match':'');
+      let tags='';
+      if(S.preview){
+        if(aff.has(n.id)) tags+=arch?'<span class="tag will">Will be archived</span>':'<span class="tag willu">Will be unarchived</span>';
+        else if(arch&&n.archived&&sub.has(n.id)) tags+='<span class="tag arc">Already archived · skipped</span>';
+      } else if(n.archived) tags+='<span class="tag arc">Archived</span>';
+      if(n.inUse&&!n.archived&&(!S.preview||aff.has(n.id))) tags+='<span class="tag use">In use · '+esc(n.inUse.kind)+'</span>';
+      if(n.id===a.id&&S.preview) tags='<span class="tag view">Opened</span>'+tags;
+      let out='<li role="treeitem" aria-level="'+depth(n)+'"'+(ks.length?' aria-expanded="'+open+'"':'')+'><div class="'+cls+'">'+
+        '<button class="caret'+(ks.length?'':' leaf')+'" type="button" data-tog="'+n.id+'" aria-label="'+(open?'Collapse':'Expand')+' '+esc(n.name)+'"'+(ks.length?'':' tabindex="-1"')+'><span class="ms">'+(open?'arrow_drop_down':'arrow_right')+'</span></button>'+
+        '<button class="tn" type="button" data-node="'+n.id+'"'+(S.preview?' disabled':'')+'>'+esc(n.name)+'</button><span class="tags">'+tags+'</span></div>';
+      if(ks.length&&open){const inner=ks.map(walk).join('');if(inner)out+='<ul role="group">'+inner+'</ul>';}
+      return out+'</li>';
+    };
+    tree='<ul class="tree" role="tree" aria-label="Hierarchy of '+esc(r.name)+'">'+walk(r)+'</ul>';
+    // action button
+    let action='';
+    if(!S.preview){
+      let tip=null;
+      if(!arch&&p.parentArchived) tip='Its parent audience is archived. Unarchive the parent first.';
+      if(arch&&p.ids.length>LIMIT) tip='You can archive up to 200 audiences at a time.';
+      const label=arch?'Archive tree':'Unarchive tree',ic=arch?'archive':'unarchive';
+      action=tip?'<span class="tipw" tabindex="0"><button class="btn secondary" type="button" disabled><span class="ms">'+ic+'</span>'+label+'</button><span class="tip right" role="tooltip">'+tip+'</span></span>':'<button class="btn secondary" type="button" id="treeAct"><span class="ms">'+ic+'</span>'+label+'</button>';
+    }
+    let h='<div class="h-grid"><div class="h-left"><div class="h-tools"><label class="search"><span class="ms">search</span><input id="treeSearch" type="search" placeholder="Search" aria-label="Search the hierarchy" value="'+esc(S.treeQ)+'"'+(S.preview?' disabled':'')+'></label><span class="spacer"></span>'+action+'</div>'+tree+'</div><div class="h-right">';
+    if(!S.preview){
+      const n=by(S.node);
+      h+='<p class="fc-title">Filter conditions in <b>'+esc(n.name)+'</b></p>'+filterBox(n);
+    } else {
+      const n=p.ids.length;
+      if(arch&&p.blocked.length) h+='<div class="prev"><h3>Archive tree</h3><div class="banner amber" role="status"><span class="ms">warning</span><p><b>'+esc(a.name)+'</b> can’t be archived yet. '+pl(p.blocked.length,'audience','audiences')+' in this tree '+(p.blocked.length===1?'is':'are')+' in use.</p></div>';
+      else if(arch) h+='<div class="prev"><h3>Archive tree</h3><div class="banner red" role="status"><span class="ms">archive</span><p>Archiving <b>'+esc(a.name)+'</b>'+(n>1?' also archives the '+pl(n-1,'audience','audiences')+' below it.':'.')+(a.parent?' Audiences above it stay active.':'')+'</p></div>';
+      else h+='<div class="prev"><h3>Unarchive tree</h3><div class="banner green" role="status"><span class="ms">unarchive</span><p>Unarchiving <b>'+esc(a.name)+'</b>'+(n>1?' also unarchives the '+pl(n-1,'audience','audiences')+' below it.':'.')+' They can be used in campaigns, journeys and promotions again.</p></div>';
+      if(p.blocked.length) h+='<div class="plist"><h4>In use · blocks archive ('+p.blocked.length+')</h4>'+p.blocked.map(id=>{const b=by(id);return '<div class="prow"><span><b style="font-weight:500">'+esc(b.name)+'</b><span class="why">'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span></span><span class="lvl">Level '+depth(b)+'</span></div>'}).join('')+'</div>';
+      h+='<div class="plist"><h4>'+(arch?'Will be archived':'Will be unarchived')+' ('+n+')</h4>'+p.ids.map(id=>{const b=by(id);return '<div class="prow"><span>'+esc(b.name)+'</span><span class="lvl">Level '+depth(b)+'</span></div>'}).join('')+'</div>';
+      if(p.skipped.length) h+='<div class="plist"><h4>Already archived · skipped ('+p.skipped.length+')</h4>'+p.skipped.map(id=>'<div class="prow"><span style="color:var(--text-3)">'+esc(by(id).name)+'</span><span class="lvl">Level '+depth(by(id))+'</span></div>').join('')+'</div>';
+      if(p.blocked.length) h+='<button class="btn link" type="button" id="viewUse">View what’s in use</button>';
+      h+='</div>';
+    }
+    return h+'</div></div>';
+  }
+  function footer(){
+    const p=plan(),arch=p.mode==='archive',n=p.ids.length,label=(arch?'Archive ':'Unarchive ')+pl(n,'audience','audiences');
+    const btn=(arch&&p.blocked.length)?'<span class="tipw" tabindex="0"><button class="btn danger" type="button" disabled>'+label+'</button><span class="tip right" role="tooltip">Some audiences in this tree are in use.</span></span>':'<button class="btn '+(arch?'danger':'primary')+'" type="button" id="confirmTree">'+label+'</button>';
+    return '<div class="d-foot"><span class="fnote">Highlighted audiences will be '+(arch?'archived':'unarchived')+'. Nothing changes until you confirm.</span><button class="btn secondary" type="button" id="cancelPrev">Cancel</button>'+btn+'</div>';
+  }
+  function wireDrawer(r){
+    r.querySelector('#dim').onclick=()=>{if(!S.preview)closeA()};
+    r.querySelector('#closeBtn').onclick=closeA;
+    r.querySelectorAll('[data-tab]').forEach(t=>t.onclick=()=>{S.tab=t.dataset.tab;S.preview=false;render()});
+    r.querySelectorAll('[data-node]').forEach(b=>b.onclick=()=>{S.node=b.dataset.node;render()});
+    r.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const id=b.dataset.tog;S.collapsed.has(id)?S.collapsed.delete(id):S.collapsed.add(id);render()});
+    r.querySelectorAll('[data-na]').forEach(b=>b.onclick=()=>toast('Not part of this prototype','info'));
+    const ts=r.querySelector('#treeSearch');if(ts)ts.oninput=()=>{S.treeQ=ts.value;render();const n=document.getElementById('treeSearch');n.focus();n.setSelectionRange(n.value.length,n.value.length)};
+    const ta=r.querySelector('#treeAct');if(ta)ta.onclick=()=>{S.preview=true;S.treeQ='';render()};
+    const cp=r.querySelector('#cancelPrev');if(cp)cp.onclick=()=>{S.preview=false;render()};
+    const vu=r.querySelector('#viewUse');if(vu)vu.onclick=inUse;
+    const ct=r.querySelector('#confirmTree');if(ct)ct.onclick=confirmTree;
+    r.querySelector('#kebab').onclick=e=>{e.stopPropagation();kebab(e.currentTarget)};
+  }
+  function kebab(btn){
+    const a=by(S.open),verb=a.archived?'Unarchive':'Archive';
+    let item;
+    if(inH(a)) item='<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button><span class="tip" role="tooltip">Use '+verb+' tree on the Hierarchy tab.</span></span>';
+    else if(!a.archived&&a.inUse) item='<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled><span class="ms">archive</span>Archive</button><span class="tip" role="tooltip">Used in the '+a.inUse.kind.toLowerCase()+' '+esc(a.inUse.name)+'.</span></span>';
+    else item='<button role="menuitem" type="button" id="kGo"><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button>';
+    const m=placeMenu(btn,'<button role="menuitem" type="button" data-x><span class="ms">content_copy</span>Duplicate</button>'+item);
+    m.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{closeMenu();toast('Not part of this prototype','info')});
+    const g=m.querySelector('#kGo');if(g)g.onclick=()=>{closeMenu();confirmFlat([a.id],a.archived?'unarchive':'archive')};
+  }
+
+  // ── modals ──
+  function modal(o){
+    const r=document.getElementById('modalRoot');
+    r.innerHTML='<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><header id="mt">'+o.title+'</header><div class="mbody">'+o.body+'</div><footer>'+(o.ok?'<button class="btn secondary" type="button" id="mC">Cancel</button><button class="btn '+(o.cls||'primary')+'" type="button" id="mOk">'+o.ok+'</button>':'<button class="btn secondary" type="button" id="mC">Close</button>')+'</footer></div></div>';
+    const close=()=>{r.innerHTML='';document.removeEventListener('keydown',k)};const k=e=>{if(e.key==='Escape')close()};
+    document.addEventListener('keydown',k);r.querySelector('#mC').onclick=close;r.querySelector('#ov').onclick=e=>{if(e.target.id==='ov')close()};
+    const ok=r.querySelector('#mOk');if(ok){ok.onclick=()=>{close();o.onOk()};ok.focus()}else r.querySelector('#mC').focus();
+  }
+  function inUse(){const p=plan();modal({title:'Can’t archive this tree',body:'<p>These audiences are in use. You can archive the tree once they’re no longer used.</p><div class="ulist">'+p.blocked.map(id=>{const b=by(id);return '<div class="urow"><b>'+esc(b.name)+'</b><span>'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span></div>'}).join('')+'</div>'})}
+  function done(n,arch){toast(n===1?(arch?'Audience archived':'Audience unarchived'):n+' audiences '+(arch?'archived':'unarchived'),'check_circle')}
+  function confirmTree(){
+    const a=by(S.open),p=plan(),n=p.ids.length,arch=p.mode==='archive',rest=n-1;
+    modal({title:(arch?'Archive ':'Unarchive ')+(n===1?'audience?':n+' audiences?'),
+      body:'<p><b style="font-weight:500">'+esc(a.name)+'</b>'+(rest?' and the '+pl(rest,'audience','audiences')+' below it move':' moves')+(arch?' to Archived and can’t be used in new campaigns, journeys or promotions. Unarchive them anytime to use them again.':' back to your active audiences and can be used again.')+'</p>',
+      ok:arch?'Archive':'Unarchive',cls:arch?'danger':'primary',
+      onOk:()=>{p.ids.forEach(id=>by(id).archived=arch);S.preview=false;S.view=arch?'archived':'active';render();done(n,arch)}});
+  }
+  function confirmFlat(ids,mode){
+    const n=ids.length,arch=mode==='archive';
+    modal({title:(arch?'Archive ':'Unarchive ')+(n===1?'audience?':n+' audiences?'),
+      body:'<p>'+(n===1?'This audience moves':'These '+n+' audiences move')+(arch?' to Archived and can’t be used in new campaigns, journeys or promotions. Unarchive '+(n===1?'it':'them')+' anytime to use '+(n===1?'it':'them')+' again.':' back to your active audiences and can be used again.')+'</p>',
+      ok:arch?'Archive':'Unarchive',cls:arch?'danger':'primary',
+      onOk:()=>{ids.forEach(id=>by(id).archived=arch);S.sel.clear();S.rowMenu=null;if(S.open)S.view=arch?'archived':'active';render();done(n,arch)}});
+  }
+  let tt;function toast(m,ic){const r=document.getElementById('toastRoot');r.innerHTML='<div class="toast" role="status"><span class="ms">'+ic+'</span>'+esc(m)+'</div>';clearTimeout(tt);tt=setTimeout(()=>r.innerHTML='',3200)}
+
+  function render(){banner();const c=document.getElementById('content');c.innerHTML=listing()+(S.open?drawer():'');wireListing(c);if(S.open)wireDrawer(c)}
+  reset();render();
+})();
+</script>
+
+</body></html>
