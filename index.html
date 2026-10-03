@@ -322,8 +322,8 @@ input[type=checkbox]:disabled{cursor:not-allowed}
     ['h3','Festive – Email opt-in · archived child, parent active']
   ];
   const TOTAL=7992312;
-  const HT_A='Part of a hierarchy. Archive it from its Hierarchy tab.';
-  const HT_U='Part of a hierarchy. Unarchive it from its Hierarchy tab.';
+  const HT_A='Audiences in a hierarchy are archived together with the ones below them. Use Archive tree on the Hierarchy tab.';
+  const HT_U='Audiences in a hierarchy are unarchived together with the ones below them. Use Unarchive tree on the Hierarchy tab.';
 
   let data;
   const S={flow:'listing',view:'active',sel:new Set(),search:'',open:null,tab:'hierarchy',node:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''};
@@ -530,8 +530,8 @@ input[type=checkbox]:disabled{cursor:not-allowed}
   function kebab(btn){
     const a=by(S.open),verb=a.archived?'Unarchive':'Archive';
     let item;
-    if(inH(a)) item='<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button><span class="tip" role="tooltip">Use '+verb+' tree on the Hierarchy tab.</span></span>';
-    else if(!a.archived&&a.inUse) item='<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled><span class="ms">archive</span>Archive</button><span class="tip" role="tooltip">Used in the '+a.inUse.kind.toLowerCase()+' '+esc(a.inUse.name)+'.</span></span>';
+    if(inH(a)) item='<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button><span class="tip" role="tooltip">'+(a.archived?HT_U:HT_A)+'</span></span>';
+    else if(!a.archived&&a.inUse) item='<span class="tipw" tabindex="0"><button role="menuitem" type="button" disabled><span class="ms">archive</span>Archive</button><span class="tip" role="tooltip">Used in the '+a.inUse.kind.toLowerCase()+' '+esc(a.inUse.name)+'. You can archive it once it’s no longer in use.</span></span>';
     else item='<button role="menuitem" type="button" id="kGo"><span class="ms">'+verb.toLowerCase()+'</span>'+verb+'</button>';
     const m=placeMenu(btn,'<button role="menuitem" type="button" data-x><span class="ms">content_copy</span>Duplicate</button>'+item);
     m.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{closeMenu();toast('Not part of this prototype','info')});
