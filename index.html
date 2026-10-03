@@ -1,11 +1,12 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Audience Archival – Option B</title>
+<title>Audience Archival Option B v2</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0&display=swap">
 <style>
 /* Layout: review banner (flow · scenario · live status) above a product frame that mirrors Nightly:
    dark Capillary sidebar · org top bar · Audience Manager listing · 75% detail drawer (Details / Hierarchy / Exports).
-   Light only, like the product. */
+   Light only, like the product.
+   v2: tree selection is a neutral tick-box selection for both directions; only exceptions get tags. */
 :root{
   color-scheme: light;
   --side-bg:#232323; --side-active:#3b3b3b; --side-text:#e9e9e9; --side-muted:#bdbdbd; --side-rule:#3d3d3d;
@@ -17,6 +18,7 @@
   --red:#c91e27; --red-hover:#b31f23; --red-disabled:#e9a3a6; --red-tint:#fdeeee; --red-border:#f3c3c5; --red-text:#a3161d; --error-text:#d0312d;
   --amber-bg:#fdf3d6; --amber-border:#f0d989; --amber-text:#7a5a06;
   --tag-neutral-bg:#ebecf0; --tag-neutral-tx:#42526e;
+  --sel-tint:#f3f6fd; --blue-border:#c8d6f8; --amber-soft:#fffaeb; --amber-bar:#e0b93f;
   --refresh-bg:#faf8f2;
   --font:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
@@ -47,7 +49,7 @@ button{font-family:inherit}
 .status .v{font-weight:500}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500}
 .pill.idle{background:var(--surface-3);color:var(--text-2)} .pill.ok{background:var(--green-tint);color:var(--green-text)}
-.pill.warn{background:var(--amber-bg);color:var(--amber-text)} .pill.red{background:var(--red-tint);color:var(--red-text)}
+.pill.info{background:var(--blue-tint);color:var(--blue)} .pill.warn{background:var(--amber-bg);color:var(--amber-text)} .pill.red{background:var(--red-tint);color:var(--red-text)}
 .reset{margin-left:auto;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--text-2);cursor:pointer;display:inline-flex;gap:4px;align-items:center}
 
 /* product frame */
@@ -183,8 +185,17 @@ input[type=checkbox]:disabled{cursor:not-allowed}
 .trow .tags:empty{display:none}
 .trow.selected{background:var(--blue-tint);border-left-color:var(--blue)}
 .trow.archived .tn{color:var(--text-3)}
-.trow.affect{background:var(--red-tint);border-left-color:var(--red)}
-.trow.affect-u{background:var(--green-tint);border-left-color:var(--green)}
+.trow.pick{background:var(--sel-tint)}
+.trow.pick.blocked{background:var(--amber-soft);border-left-color:var(--amber-bar)}
+.trow .tcb{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex:0 0 auto}
+.trow .tcb input{accent-color:var(--blue)}
+.trow .tcb input:disabled{accent-color:var(--blue);opacity:.55}
+.trow .tn:disabled{cursor:default;color:inherit}
+.trow.pick .tn{font-weight:500}
+.trow.archived .tn:disabled{color:var(--text-3)}
+.tag.stay{background:var(--surface);color:var(--text-2);border:1px solid var(--border)}
+.tag.use .ms{font-size:14px;margin-right:4px}
+.tag.use.tipw{display:inline-flex}
 .trow.match .tn{font-weight:500}
 .fc-title{font-size:15px;color:var(--text-2);margin:2px 0 18px}
 .fc-title b{color:var(--text);font-weight:500}
@@ -193,6 +204,7 @@ input[type=checkbox]:disabled{cursor:not-allowed}
 .banner p{margin:0;flex:1}.banner b{font-weight:500}
 .banner.red{background:var(--red-tint);border:1px solid var(--red-border)}.banner.red .ms{color:var(--red)}
 .banner.amber{background:var(--amber-bg);border:1px solid var(--amber-border)}.banner.amber .ms{color:var(--amber-text)}
+.banner.info{background:var(--blue-tint);border:1px solid var(--blue-border)}.banner.info .ms{color:var(--blue)}
 .banner.green{background:var(--green-tint);border:1px solid var(--green-border)}.banner.green .ms{color:var(--green-text)}
 .plist{border:1px solid var(--border);border-radius:6px;margin-bottom:14px}
 .plist h4{margin:0;padding:10px 14px;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-2);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--border)}
@@ -200,8 +212,19 @@ input[type=checkbox]:disabled{cursor:not-allowed}
 .prow:last-child{border-bottom:0}
 .prow .lvl{margin-left:auto;font-size:12px;color:var(--text-3);white-space:nowrap}
 .prow .why{display:block;font-size:12.5px;color:var(--amber-text)}
+details.plist>summary{list-style:none;cursor:pointer;margin:0;padding:10px 14px;font-size:12px;color:var(--text-2);font-weight:500;background:var(--surface-2);display:flex;align-items:center;gap:6px}
+details.plist>summary .lbl{letter-spacing:.5px;text-transform:uppercase}
+details.plist>summary::-webkit-details-marker{display:none}
+details.plist>summary .ms{font-size:18px;transition:transform .15s}
+details.plist[open]>summary{border-bottom:1px solid var(--border)}
+details.plist[open]>summary .ms{transform:rotate(90deg)}
+.pnote{display:flex;gap:8px;font-size:13px;color:var(--text-2);margin:0 0 16px}
+.pnote .ms{font-size:16px;margin-top:1px}
 .d-foot{border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;gap:12px;background:var(--surface)}
-.d-foot .fnote{flex:1;font-size:13px;color:var(--text-2)}
+.d-foot .fnote{flex:1;font-size:13px;color:var(--text-2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.d-foot .fnote b{color:var(--text);font-weight:500}
+.d-foot .fnote.warn{color:var(--amber-text)}
+.d-foot .fnote.warn>.ms{font-size:18px}
 
 /* menu, modal, toast */
 .menu{position:fixed;z-index:60;background:var(--surface);border-radius:6px;box-shadow:0 4px 14px rgba(9,30,66,.18);min-width:210px;padding:4px 0}
@@ -229,8 +252,8 @@ input[type=checkbox]:disabled{cursor:not-allowed}
   <section class="rb" aria-label="Prototype controls">
     <div class="rb-top">
       <div>
-        <p class="rb-label">Prototype · Option B · matched to Nightly</p>
-        <p class="rb-desc">Audiences in a hierarchy are archived only from the <b>Hierarchy tab</b> with <b>Archive tree</b>. It covers the audience you opened and every audience below it. On the listing, the checkbox and ⋯ Archive are disabled for hierarchy audiences. Standalone audiences archive as usual.</p>
+        <p class="rb-label">Prototype · Option B v2 · for flow testing</p>
+        <p class="rb-desc"><b>Archive tree</b> goes top to bottom: ticking an audience includes every audience below it. <b>Unarchive tree</b> goes bottom to top: ticking an archived audience includes its archived parents. Both live on the <b>Hierarchy tab</b>, support ticking several audiences at once, and tag only the exceptions.</p>
       </div>
       <div class="controls">
         <div class="seg" role="radiogroup" aria-label="Flow" id="flowSeg"></div>
@@ -317,17 +340,18 @@ input[type=checkbox]:disabled{cursor:not-allowed}
     ['g4','Gold – High spenders · a child is used in a journey'],
     ['g1','Members – India · deep branch, blocked by a journey'],
     ['h1','Exclude fraud & suspended · top level, blocked by a promotion'],
-    ['k1','Lapsed members 2024 · archived top level (unarchive)'],
-    ['k3','Lapsed 2024 – Silver · archived, parent still archived'],
+    ['k1','Lapsed members 2024 · archived top level'],
+    ['k4','Silver – SMS opt-in · archived leaf, 2 archived audiences above it'],
+    ['k3','Lapsed 2024 – Silver · archived, parent also archived'],
     ['h3','Festive – Email opt-in · archived child, parent active']
   ];
   const TOTAL=7992312;
   const HT_A='Audiences in a hierarchy are archived together with the ones below them. Use Archive tree on the Hierarchy tab.';
-  const HT_U='Audiences in a hierarchy are unarchived together with the ones below them. Use Unarchive tree on the Hierarchy tab.';
+  const HT_U='Audiences in a hierarchy are unarchived together with the ones above them. Use Unarchive tree on the Hierarchy tab.';
 
   let data;
-  const S={flow:'listing',view:'active',sel:new Set(),search:'',open:null,tab:'hierarchy',node:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''};
-  function reset(){data=SEED.map(a=>Object.assign({archived:false,inUse:null},a));Object.assign(S,{flow:'listing',view:'active',sel:new Set(),search:'',open:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''});}
+  const S={picks:new Set(),flow:'listing',view:'active',sel:new Set(),search:'',open:null,tab:'hierarchy',node:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''};
+  function reset(){data=SEED.map(a=>Object.assign({archived:false,inUse:null},a));Object.assign(S,{picks:new Set(),flow:'listing',view:'active',sel:new Set(),search:'',open:null,preview:false,rowMenu:null,collapsed:new Set(),treeQ:''});}
 
   const by=id=>data.find(a=>a.id===id);
   const kids=id=>data.filter(a=>a.parent===id);
@@ -337,13 +361,24 @@ input[type=checkbox]:disabled{cursor:not-allowed}
   const below=id=>{const o=[];const w=x=>kids(x).forEach(k=>{o.push(k.id);w(k.id)});w(id);return o};
   const fmt=n=>n==null?'':n.toLocaleString('en-US');
   const pl=(n,a,b)=>n+' '+(n===1?a:b);
+  const the=(n,w)=>n===1?'the '+w:'the '+n+' '+w+'s';
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+  const dfs=id=>[id].concat(...kids(id).map(k=>dfs(k.id)));
+  const ancestors=id=>{const o=[];let x=by(id).parent;while(x){o.push(x);x=by(x).parent}return o};
+  // Pure selection logic. Archive cascades down to active descendants; unarchive cascades up to archived ancestors.
   function plan(){
-    const a=by(S.open), all=[a.id].concat(below(a.id));
-    if(!a.archived){const ids=all.filter(id=>!by(id).archived);return{mode:'archive',ids,skipped:all.filter(id=>by(id).archived),blocked:ids.filter(id=>by(id).inUse)};}
-    const p=a.parent&&by(a.parent);
-    return{mode:'unarchive',ids:all.filter(id=>by(id).archived),skipped:[],blocked:[],parentArchived:!!(p&&p.archived),parent:p&&p.id};
+    const a=by(S.open), mode=a.archived?'unarchive':'archive', arch=mode==='archive';
+    const picks=new Set([...(S.preview?S.picks:[a.id])].filter(id=>by(id).archived===!arch));
+    const eff=new Set(), implied=new Map(), skipped=new Set(), context=new Set();
+    picks.forEach(p=>{
+      eff.add(p);
+      if(arch) below(p).forEach(d=>{if(by(d).archived)skipped.add(d);else{eff.add(d);if(!implied.has(d))implied.set(d,p)}});
+      else {for(const x of ancestors(p)){if(!by(x).archived){context.add(x);break}eff.add(x);if(!implied.has(x))implied.set(x,p)}}
+    });
+    if(arch) eff.forEach(id=>ancestors(id).forEach(x=>{if(!eff.has(x)&&!by(x).archived)context.add(x)}));
+    const order=dfs(root(a).id), ids=order.filter(id=>eff.has(id));
+    return{mode,picks,ids,implied,skipped:order.filter(id=>skipped.has(id)&&!eff.has(id)),context,blocked:arch?ids.filter(id=>by(id).inUse):[]};
   }
 
   // ── banner ──
@@ -360,10 +395,11 @@ input[type=checkbox]:disabled{cursor:not-allowed}
     if(S.open){
       const a=by(S.open),p=plan();
       where='Detail drawer · '+S.tab[0].toUpperCase()+S.tab.slice(1)+' tab'+(S.preview?' · preview':'');
-      selTxt=inH(a)?a.name+(p.ids.length>1?' + '+pl(p.ids.length-1,'audience','audiences')+' below':''):a.name;
-      if(!inH(a)) pill=['idle','Standalone audience · use ⋯ to archive'];
-      else if(p.mode==='archive') pill=p.blocked.length?['warn','Archive tree blocked · '+pl(p.blocked.length,'audience','audiences')+' in use']:S.preview?['red',pl(p.ids.length,'audience','audiences')+' will be archived']:['ok','Archive tree available'];
-      else pill=p.parentArchived?['warn','Unarchive tree blocked · parent is archived']:S.preview?['ok',pl(p.ids.length,'audience','audiences')+' will be unarchived']:['ok','Unarchive tree available'];
+      selTxt=S.preview?(p.ids.length?p.ids.slice(0,3).map(id=>by(id).name).join(', ')+(p.ids.length>3?' + '+(p.ids.length-3)+' more':''):'None'):a.name;
+      if(!inH(a)) pill=['idle','Standalone audience · use ⋯ to '+(a.archived?'unarchive':'archive')];
+      else if(!S.preview) pill=['ok',(p.mode==='archive'?'Archive':'Unarchive')+' tree available'];
+      else if(p.blocked.length) pill=['warn','Archive tree blocked · '+pl(p.blocked.length,'audience','audiences')+' in use'];
+      else pill=['info',pl(p.ids.length,'audience','audiences')+' selected to '+p.mode];
     } else {
       where=S.view==='archived'?'Archived listing':'Listing';
       if(S.rowMenu){const a=by(S.rowMenu);selTxt=a.name+' (⋯ menu)';pill=inH(a)?['warn',(S.view==='archived'?'Unarchive':'Archive')+' disabled · part of a hierarchy']:(a.inUse&&S.view!=='archived')?['warn','Archive disabled · in use']:['ok',(S.view==='archived'?'Unarchive':'Archive')+' available'];}
@@ -434,6 +470,7 @@ input[type=checkbox]:disabled{cursor:not-allowed}
     const f=m.querySelector('[data-a="go"]')||m.querySelector('.tipw');if(f)f.focus();
   }
   document.addEventListener('click',e=>{if(!e.target.closest('.menu'))closeMenu()});
+  document.addEventListener('keydown',e=>{if(e.key!=='Escape'||document.getElementById('modalRoot').innerHTML)return;if(document.getElementById('menuRoot').innerHTML){closeMenu();return}if(S.preview){S.preview=false;render()}});
   window.addEventListener('scroll',closeMenu,true);
 
   // ── drawer ──
@@ -459,59 +496,86 @@ input[type=checkbox]:disabled{cursor:not-allowed}
     return h+'</aside>';
   }
   function hierarchy(a){
-    const p=plan(),r=root(a),arch=p.mode==='archive';
-    const aff=new Set(S.preview?p.ids:[]), sub=new Set(below(a.id));
+    const p=plan(),r=root(a),arch=p.mode==='archive',pv=S.preview;
+    const eff=new Set(p.ids), skip=new Set(p.skipped);
     const q=S.treeQ.trim().toLowerCase();
     const visible=id=>{if(!q)return true;const n=by(id);return n.name.toLowerCase().includes(q)||below(id).some(x=>by(x).name.toLowerCase().includes(q))};
-    let tree='';
     const walk=n=>{
       if(!visible(n.id))return '';
-      const ks=kids(n.id), open=!S.collapsed.has(n.id)||S.preview||q;
-      let cls='trow'+(!S.preview&&n.id===S.node?' selected':'')+(n.archived?' archived':'')+(aff.has(n.id)?(arch?' affect':' affect-u'):'')+(q&&n.name.toLowerCase().includes(q)?' match':'');
+      const ks=kids(n.id), open=!S.collapsed.has(n.id)||pv||q;
+      const eligible=pv&&n.archived===!arch, inSel=eff.has(n.id), imp=p.implied.get(n.id), blk=inSel&&!!n.inUse&&arch;
+      const cls='trow'+(!pv&&n.id===S.node?' selected':'')+(n.archived?' archived':'')+(inSel?' pick':'')+(blk?' blocked':'')+(q&&n.name.toLowerCase().includes(q)?' match':'');
       let tags='';
-      if(S.preview){
-        if(aff.has(n.id)) tags+=arch?'<span class="tag will">Will be archived</span>':'<span class="tag willu">Will be unarchived</span>';
-        else if(arch&&n.archived&&sub.has(n.id)) tags+='<span class="tag arc">Already archived · skipped</span>';
+      if(pv&&n.id===a.id) tags+='<span class="tag view">Opened</span>';
+      if(n.inUse&&!n.archived) tags+='<span class="tag use tipw" tabindex="0"><span class="ms">block</span>In use · '+esc(n.inUse.kind)+'<span class="tip right" role="tooltip">Used in the '+esc(n.inUse.kind.toLowerCase())+' '+esc(n.inUse.name)+'.</span></span>';
+      if(pv&&arch){
+        if(skip.has(n.id)) tags+='<span class="tag arc">Already archived · skipped</span>';
+        else if(n.archived) tags+='<span class="tag arc">Archived</span>';
+        else if(p.context.has(n.id)) tags+='<span class="tag stay">Stays active</span>';
+      } else if(pv){
+        if(p.context.has(n.id)) tags+='<span class="tag stay">Already active</span>';
+        else if(n.archived&&!inSel) tags+='<span class="tag arc">Archived</span>';
       } else if(n.archived) tags+='<span class="tag arc">Archived</span>';
-      if(n.inUse&&!n.archived&&(!S.preview||aff.has(n.id))) tags+='<span class="tag use">In use · '+esc(n.inUse.kind)+'</span>';
-      if(n.id===a.id&&S.preview) tags='<span class="tag view">Opened</span>'+tags;
-      let out='<li role="treeitem" aria-level="'+depth(n)+'"'+(ks.length?' aria-expanded="'+open+'"':'')+'><div class="'+cls+'">'+
-        '<button class="caret'+(ks.length?'':' leaf')+'" type="button" data-tog="'+n.id+'" aria-label="'+(open?'Collapse':'Expand')+' '+esc(n.name)+'"'+(ks.length?'':' tabindex="-1"')+'><span class="ms">'+(open?'arrow_drop_down':'arrow_right')+'</span></button>'+
-        '<button class="tn" type="button" data-node="'+n.id+'"'+(S.preview?' disabled':'')+'>'+esc(n.name)+'</button><span class="tags">'+tags+'</span></div>';
+      let cb='';
+      if(pv){
+        if(!eligible) cb='<span class="tcb" aria-hidden="true"></span>';
+        else if(imp) cb='<span class="tcb tipw" tabindex="0"><input type="checkbox" checked disabled aria-label="'+esc(n.name)+' is included"><span class="tip" role="tooltip">'+(arch?'Included because '+esc(by(imp).name)+' is selected. Audiences below a selected audience are archived with it.':'Included because '+esc(by(imp).name)+' is selected. An unarchived audience needs an active parent.')+'</span></span>';
+        else cb='<span class="tcb"><input type="checkbox" data-pick="'+n.id+'" id="pick-'+n.id+'" aria-label="Select '+esc(n.name)+'"'+(inSel?' checked':'')+'></span>';
+      }
+      const nameClick=pv?(eligible&&!imp?' data-pickname="'+n.id+'"':' disabled'):' data-node="'+n.id+'"';
+      let out='<li role="treeitem" aria-level="'+depth(n)+'"'+(ks.length?' aria-expanded="'+open+'"':'')+(pv?' aria-selected="'+inSel+'"':'')+'><div class="'+cls+'">'+
+        '<button class="caret'+(ks.length?'':' leaf')+'" type="button" data-tog="'+n.id+'" aria-label="'+(open?'Collapse':'Expand')+' '+esc(n.name)+'"'+(ks.length&&!pv?'':' tabindex="-1"')+'><span class="ms">'+(open?'arrow_drop_down':'arrow_right')+'</span></button>'+cb+
+        '<button class="tn" type="button"'+nameClick+'>'+esc(n.name)+'</button><span class="tags">'+tags+'</span></div>';
       if(ks.length&&open){const inner=ks.map(walk).join('');if(inner)out+='<ul role="group">'+inner+'</ul>';}
       return out+'</li>';
     };
-    tree='<ul class="tree" role="tree" aria-label="Hierarchy of '+esc(r.name)+'">'+walk(r)+'</ul>';
-    // action button
+    const tree='<ul class="tree" role="tree" aria-label="Hierarchy of '+esc(r.name)+'"'+(pv?' aria-multiselectable="true"':'')+'>'+walk(r)+'</ul>';
     let action='';
-    if(!S.preview){
-      let tip=null;
-      if(!arch&&p.parentArchived) tip='Its parent audience is archived. Unarchive the parent first.';
-      if(arch&&p.ids.length>LIMIT) tip='You can archive up to 200 audiences at a time.';
+    if(!pv){
       const label=arch?'Archive tree':'Unarchive tree',ic=arch?'archive':'unarchive';
+      const tip=arch&&p.ids.length>LIMIT?'You can archive up to 200 audiences at a time.':null;
       action=tip?'<span class="tipw" tabindex="0"><button class="btn secondary" type="button" disabled><span class="ms">'+ic+'</span>'+label+'</button><span class="tip right" role="tooltip">'+tip+'</span></span>':'<button class="btn secondary" type="button" id="treeAct"><span class="ms">'+ic+'</span>'+label+'</button>';
     }
-    let h='<div class="h-grid"><div class="h-left"><div class="h-tools"><label class="search"><span class="ms">search</span><input id="treeSearch" type="search" placeholder="Search" aria-label="Search the hierarchy" value="'+esc(S.treeQ)+'"'+(S.preview?' disabled':'')+'></label><span class="spacer"></span>'+action+'</div>'+tree+'</div><div class="h-right">';
-    if(!S.preview){
+    let h='<div class="h-grid"><div class="h-left"><div class="h-tools"><label class="search"><span class="ms">search</span><input id="treeSearch" type="search" placeholder="Search" aria-label="Search the hierarchy" value="'+esc(S.treeQ)+'"></label><span class="spacer"></span>'+action+'</div>'+tree+'</div><div class="h-right">';
+    if(!pv){
       const n=by(S.node);
-      h+='<p class="fc-title">Filter conditions in <b>'+esc(n.name)+'</b></p>'+filterBox(n);
-    } else {
-      const n=p.ids.length;
-      if(arch&&p.blocked.length) h+='<div class="prev"><h3>Archive tree</h3><div class="banner amber" role="status"><span class="ms">warning</span><p><b>'+esc(a.name)+'</b> can’t be archived yet. '+pl(p.blocked.length,'audience','audiences')+' in this tree '+(p.blocked.length===1?'is':'are')+' in use.</p></div>';
-      else if(arch) h+='<div class="prev"><h3>Archive tree</h3><div class="banner red" role="status"><span class="ms">archive</span><p>Archiving <b>'+esc(a.name)+'</b>'+(n>1?' also archives the '+pl(n-1,'audience','audiences')+' below it.':'.')+(a.parent?' Audiences above it stay active.':'')+'</p></div>';
-      else h+='<div class="prev"><h3>Unarchive tree</h3><div class="banner green" role="status"><span class="ms">unarchive</span><p>Unarchiving <b>'+esc(a.name)+'</b>'+(n>1?' also unarchives the '+pl(n-1,'audience','audiences')+' below it.':'.')+' They can be used in campaigns, journeys and promotions again.</p></div>';
-      if(p.blocked.length) h+='<div class="plist"><h4>In use · blocks archive ('+p.blocked.length+')</h4>'+p.blocked.map(id=>{const b=by(id);return '<div class="prow"><span><b style="font-weight:500">'+esc(b.name)+'</b><span class="why">'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span></span><span class="lvl">Level '+depth(b)+'</span></div>'}).join('')+'</div>';
-      h+='<div class="plist"><h4>'+(arch?'Will be archived':'Will be unarchived')+' ('+n+')</h4>'+p.ids.map(id=>{const b=by(id);return '<div class="prow"><span>'+esc(b.name)+'</span><span class="lvl">Level '+depth(b)+'</span></div>'}).join('')+'</div>';
-      if(p.skipped.length) h+='<div class="plist"><h4>Already archived · skipped ('+p.skipped.length+')</h4>'+p.skipped.map(id=>'<div class="prow"><span style="color:var(--text-3)">'+esc(by(id).name)+'</span><span class="lvl">Level '+depth(by(id))+'</span></div>').join('')+'</div>';
-      if(p.blocked.length) h+='<button class="btn link" type="button" id="viewUse">View what’s in use</button>';
-      h+='</div>';
+      return h+'<p class="fc-title">Filter conditions in <b>'+esc(n.name)+'</b></p>'+filterBox(n)+'</div></div>';
     }
-    return h+'</div></div>';
+    const n=p.ids.length, single=p.picks.size===1&&p.picks.has(a.id);
+    const row=(id,extra)=>{const b=by(id);return '<div class="prow"><span>'+(extra?'<b style="font-weight:500">'+esc(b.name)+'</b>'+extra:esc(b.name))+'</span><span class="lvl">Level '+depth(b)+'</span></div>'};
+    const list=(title,ids,openIt,fn)=>'<details class="plist"'+(openIt?' open':'')+'><summary><span class="ms" aria-hidden="true">chevron_right</span><span class="lbl">'+title+' ('+ids.length+')</span></summary>'+ids.map(fn||(id=>row(id))).join('')+'</details>';
+    h+='<div class="prev">';
+    if(arch){
+      h+='<h3>Archive tree</h3>';
+      if(p.blocked.length) h+='<div class="banner amber" role="status"><span class="ms">warning</span><p>'+(single?'<b>'+esc(a.name)+'</b> can’t':'This selection can’t')+' be archived yet. '+pl(p.blocked.length,'audience','audiences')+' in '+(single?'this tree':'it')+' '+(p.blocked.length===1?'is':'are')+' in use.</p></div>';
+      else if(!n) h+='<div class="banner info" role="status"><span class="ms">info</span><p>Select the audiences to archive. Every audience below a selected one is included.</p></div>';
+      else h+='<div class="banner info" role="status"><span class="ms">info</span><p>'+(single?'Archiving <b>'+esc(a.name)+'</b>'+(n>1?' also archives '+the(n-1,'audience')+' below it.':'.')+(a.parent?' Audiences above it stay active.':''):pl(n,'audience','audiences')+' will be archived: the ones you selected and every audience below them.')+'</p></div>';
+      if(p.blocked.length) h+=list('In use · blocks archive',p.blocked,true,id=>{const b=by(id);return row(id,'<span class="why">'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span>')});
+      if(n) h+=list('Selected to archive',p.ids,false);
+      if(p.skipped.length) h+=list('Already archived · skipped',p.skipped,false,id=>'<div class="prow"><span style="color:var(--text-3)">'+esc(by(id).name)+'</span><span class="lvl">Level '+depth(by(id))+'</span></div>');
+      if(p.blocked.length) h+='<button class="btn link" type="button" id="viewUse">View what’s in use</button>';
+    } else {
+      const req=p.ids.filter(id=>p.implied.has(id)), sel=p.ids.filter(id=>!p.implied.has(id));
+      h+='<h3>Unarchive tree</h3>';
+      if(!n) h+='<div class="banner info" role="status"><span class="ms">info</span><p>Select the archived audiences to unarchive. Their archived parents are included.</p></div>';
+      else h+='<div class="banner info" role="status"><span class="ms">info</span><p>'+(single?(req.length?'Unarchiving <b>'+esc(a.name)+'</b> also unarchives '+the(req.length,'archived audience')+' above it, so it has an active parent.':'<b>'+esc(a.name)+'</b> moves back to Active.'):pl(n,'audience','audiences')+' will be unarchived: the ones you selected and their archived parents.')+'</p></div>';
+      h+='<p class="pnote"><span class="ms">info</span><span>Customer counts stay as of the last refresh until you refresh them. Journeys that used these audiences before won’t reconnect automatically.</span></p>';
+      if(req.length) h+=list('Required · above a selected audience',req,true);
+      if(sel.length) h+=list('Selected to unarchive',sel,true);
+      const more=below(a.id).filter(id=>by(id).archived&&!eff.has(id));
+      if(more.length) h+='<button class="btn link" type="button" id="pickBelow">Also select '+the(more.length,'archived audience')+' below '+esc(a.name)+'</button>';
+    }
+    return h+'</div></div></div>';
   }
   function footer(){
-    const p=plan(),arch=p.mode==='archive',n=p.ids.length,label=(arch?'Archive ':'Unarchive ')+pl(n,'audience','audiences');
-    const btn=(arch&&p.blocked.length)?'<span class="tipw" tabindex="0"><button class="btn danger" type="button" disabled>'+label+'</button><span class="tip right" role="tooltip">Some audiences in this tree are in use.</span></span>':'<button class="btn '+(arch?'danger':'primary')+'" type="button" id="confirmTree">'+label+'</button>';
-    return '<div class="d-foot"><span class="fnote">Highlighted audiences will be '+(arch?'archived':'unarchived')+'. Nothing changes until you confirm.</span><button class="btn secondary" type="button" id="cancelPrev">Cancel</button>'+btn+'</div>';
+    const p=plan(),arch=p.mode==='archive',n=p.ids.length,verb=arch?'archive':'unarchive';
+    if(p.blocked.length) return '<div class="d-foot"><span class="fnote warn"><span class="ms">warning</span><span>'+pl(p.blocked.length,'audience','audiences')+' in this selection '+(p.blocked.length===1?'is':'are')+' in use, so it can’t be archived yet.</span><button class="btn link" type="button" id="viewUse2">View what’s in use</button></span><button class="btn secondary" type="button" id="cancelPrev">Close</button></div>';
+    const label=(arch?'Archive ':'Unarchive ')+pl(n,'audience','audiences');
+    let note,ok=true;
+    if(!n){note='Select at least one audience to '+verb+'.';ok=false}
+    else if(n>LIMIT){note='You can '+verb+' up to '+LIMIT+' audiences at a time.';ok=false}
+    else note='<b>'+pl(n,'audience','audiences')+'</b> selected. Nothing changes until you confirm.';
+    return '<div class="d-foot"><span class="fnote">'+note+'</span><button class="btn secondary" type="button" id="cancelPrev">Cancel</button><button class="btn primary" type="button" id="confirmTree"'+(ok?'':' disabled')+'>'+(n?label:(arch?'Archive':'Unarchive'))+'</button></div>';
   }
   function wireDrawer(r){
     r.querySelector('#dim').onclick=()=>{if(!S.preview)closeA()};
@@ -521,7 +585,12 @@ input[type=checkbox]:disabled{cursor:not-allowed}
     r.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const id=b.dataset.tog;S.collapsed.has(id)?S.collapsed.delete(id):S.collapsed.add(id);render()});
     r.querySelectorAll('[data-na]').forEach(b=>b.onclick=()=>toast('Not part of this prototype','info'));
     const ts=r.querySelector('#treeSearch');if(ts)ts.oninput=()=>{S.treeQ=ts.value;render();const n=document.getElementById('treeSearch');n.focus();n.setSelectionRange(n.value.length,n.value.length)};
-    const ta=r.querySelector('#treeAct');if(ta)ta.onclick=()=>{S.preview=true;S.treeQ='';render()};
+    const ta=r.querySelector('#treeAct');if(ta)ta.onclick=()=>{S.preview=true;S.picks=new Set([S.open]);S.treeQ='';render()};
+    const toggle=id=>{S.picks.has(id)?S.picks.delete(id):S.picks.add(id);render();const el=document.getElementById('pick-'+id);if(el)el.focus()};
+    r.querySelectorAll('[data-pick]').forEach(cb=>cb.onchange=()=>toggle(cb.dataset.pick));
+    r.querySelectorAll('[data-pickname]').forEach(b=>b.onclick=()=>toggle(b.dataset.pickname));
+    const pb=r.querySelector('#pickBelow');if(pb)pb.onclick=()=>{below(S.open).forEach(id=>{if(by(id).archived)S.picks.add(id)});render()};
+    const vu2=r.querySelector('#viewUse2');if(vu2)vu2.onclick=inUse;
     const cp=r.querySelector('#cancelPrev');if(cp)cp.onclick=()=>{S.preview=false;render()};
     const vu=r.querySelector('#viewUse');if(vu)vu.onclick=inUse;
     const ct=r.querySelector('#confirmTree');if(ct)ct.onclick=confirmTree;
@@ -549,17 +618,20 @@ input[type=checkbox]:disabled{cursor:not-allowed}
   function inUse(){const p=plan();modal({title:'Can’t archive this tree',body:'<p>These audiences are in use. You can archive the tree once they’re no longer used.</p><div class="ulist">'+p.blocked.map(id=>{const b=by(id);return '<div class="urow"><b>'+esc(b.name)+'</b><span>'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span></div>'}).join('')+'</div>'})}
   function done(n,arch){toast(n===1?(arch?'Audience archived':'Audience unarchived'):n+' audiences '+(arch?'archived':'unarchived'),'check_circle')}
   function confirmTree(){
-    const a=by(S.open),p=plan(),n=p.ids.length,arch=p.mode==='archive',rest=n-1;
-    modal({title:(arch?'Archive ':'Unarchive ')+(n===1?'audience?':n+' audiences?'),
-      body:'<p><b style="font-weight:500">'+esc(a.name)+'</b>'+(rest?' and the '+pl(rest,'audience','audiences')+' below it move':' moves')+(arch?' to Archived and can’t be used in new campaigns, journeys or promotions. Unarchive them anytime to use them again.':' back to your active audiences and can be used again.')+'</p>',
-      ok:arch?'Archive':'Unarchive',cls:arch?'danger':'primary',
-      onOk:()=>{p.ids.forEach(id=>by(id).archived=arch);S.preview=false;S.view=arch?'archived':'active';render();done(n,arch)}});
+    const a=by(S.open),p=plan(),n=p.ids.length,arch=p.mode==='archive',single=p.picks.size===1&&p.picks.has(a.id);
+    const nm='<b style="font-weight:500">'+esc(a.name)+'</b>';
+    let body;
+    if(arch) body=(single?(n>1?nm+' and '+the(n-1,'audience')+' below it move':nm+' moves'):'These '+n+' audiences move')+' to Archived and can’t be used in new campaigns, journeys or promotions. Unarchive '+(n===1?'it':'them')+' anytime to use '+(n===1?'it':'them')+' again.';
+    else body=(single?(n>1?nm+' and '+the(n-1,'audience')+' above it move':nm+' moves'):'These '+n+' audiences move')+' to Active. Customer counts stay as of the last refresh until you refresh them. Journeys that used '+(n===1?'it':'them')+' before won’t reconnect automatically.';
+    modal({title:(arch?'Archive ':'Unarchive ')+(n===1?'audience?':n+' audiences?'),body:'<p>'+body+'</p>',
+      ok:arch?'Archive':'Unarchive',cls:'primary',
+      onOk:()=>{p.ids.forEach(id=>by(id).archived=arch);S.preview=false;S.picks=new Set();S.view=by(S.open).archived?'archived':'active';S.flow=S.view==='archived'?'archived':'listing';render();done(n,arch)}});
   }
   function confirmFlat(ids,mode){
     const n=ids.length,arch=mode==='archive';
     modal({title:(arch?'Archive ':'Unarchive ')+(n===1?'audience?':n+' audiences?'),
-      body:'<p>'+(n===1?'This audience moves':'These '+n+' audiences move')+(arch?' to Archived and can’t be used in new campaigns, journeys or promotions. Unarchive '+(n===1?'it':'them')+' anytime to use '+(n===1?'it':'them')+' again.':' back to your active audiences and can be used again.')+'</p>',
-      ok:arch?'Archive':'Unarchive',cls:arch?'danger':'primary',
+      body:'<p>'+(n===1?'This audience moves':'These '+n+' audiences move')+(arch?' to Archived and can’t be used in new campaigns, journeys or promotions. Unarchive '+(n===1?'it':'them')+' anytime to use '+(n===1?'it':'them')+' again.':' to Active. Customer counts stay as of the last refresh until you refresh them.')+'</p>',
+      ok:arch?'Archive':'Unarchive',cls:'primary',
       onOk:()=>{ids.forEach(id=>by(id).archived=arch);S.sel.clear();S.rowMenu=null;if(S.open)S.view=arch?'archived':'active';render();done(n,arch)}});
   }
   let tt;function toast(m,ic){const r=document.getElementById('toastRoot');r.innerHTML='<div class="toast" role="status"><span class="ms">'+ic+'</span>'+esc(m)+'</div>';clearTimeout(tt);tt=setTimeout(()=>r.innerHTML='',3200)}

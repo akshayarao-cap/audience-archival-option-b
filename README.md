@@ -10,8 +10,11 @@ Open `index.html` in a browser.
 ## Deploy
 - **Vercel:** import this repo, set Framework preset to "Other", and leave the build
   command empty. Each push to `main` redeploys to the same URL.
-- **Netlify:** import this repo with an empty build command and publish directory `.`,
-  or drag this folder onto https://app.netlify.com/drop.
+- **Netlify:** import this repo. `netlify.toml` already sets no build command and publish
+  directory `.`, so accept the defaults. Each push to `main` redeploys.
+
+The first version of the flow (red preview, top-down unarchive) is kept at the git tag
+`v1-original`.
 
 ## Update
 Replace `index.html` with the new export, then commit and push. The live link updates
