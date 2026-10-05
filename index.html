@@ -1,12 +1,12 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Audience Archival Option B v2</title>
+<title>Audience Archival Option B v3</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0&display=swap">
 <style>
 /* Layout: review banner (flow · scenario · live status) above a product frame that mirrors Nightly:
    dark Capillary sidebar · org top bar · Audience Manager listing · 75% detail drawer (Details / Hierarchy / Exports).
    Light only, like the product.
-   v2: tree selection is a neutral tick-box selection for both directions; only exceptions get tags. */
+   v3: rows are selected by clicking them (no checkboxes), one subtle blue for both directions; only exceptions get tags. */
 :root{
   color-scheme: light;
   --side-bg:#232323; --side-active:#3b3b3b; --side-text:#e9e9e9; --side-muted:#bdbdbd; --side-rule:#3d3d3d;
@@ -183,16 +183,22 @@ input[type=checkbox]:disabled{cursor:not-allowed}
 .trow .tn:hover{color:var(--blue)}
 .trow .tags{margin-left:auto;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;flex:0 1 auto;padding-left:8px}
 .trow .tags:empty{display:none}
-.trow.selected{background:var(--blue-tint);border-left-color:var(--blue)}
+.trow.selected{background:var(--surface-3)}
+.trow.selected .tn{font-weight:500}
 .trow.archived .tn{color:var(--text-3)}
-.trow.pick{background:var(--sel-tint)}
-.trow.pick.blocked{background:var(--amber-soft);border-left-color:var(--amber-bar)}
-.trow .tcb{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex:0 0 auto}
-.trow .tcb input{accent-color:var(--blue)}
-.trow .tcb input:disabled{accent-color:var(--blue);opacity:.55}
+.trow.pick{background:var(--blue-tint)}
+.trow.mine{border-left-color:var(--blue)}
+.trow.mine .tn{font-weight:500}
+.trow.path{border-left-color:var(--amber-border)}
+.trow.blocked{border-left-color:var(--amber-bar)}
+.trow.clickable{cursor:pointer}
+.trow.clickable:not(.pick):hover{background:var(--surface-2)}
+.trow.clickable .tn:hover{color:var(--text)}
+.trow.implied .tn,.trow.inert .tn{cursor:default}
+.trow.inert .tn:disabled{color:var(--text-3)}
 .trow .tn:disabled{cursor:default;color:inherit}
-.trow.pick .tn{font-weight:500}
-.trow.archived .tn:disabled{color:var(--text-3)}
+.trow>.tip{left:56px}
+.trow.implied:hover>.tip,.trow.implied:focus-within>.tip{display:block}
 .tag.stay{background:var(--surface);color:var(--text-2);border:1px solid var(--border)}
 .tag.use .ms{font-size:14px;margin-right:4px}
 .tag.use.tipw{display:inline-flex}
@@ -218,6 +224,7 @@ details.plist>summary::-webkit-details-marker{display:none}
 details.plist>summary .ms{font-size:18px;transition:transform .15s}
 details.plist[open]>summary{border-bottom:1px solid var(--border)}
 details.plist[open]>summary .ms{transform:rotate(90deg)}
+.pempty{padding:10px 14px;font-size:13px;color:var(--text-3)}
 .pnote{display:flex;gap:8px;font-size:13px;color:var(--text-2);margin:0 0 16px}
 .pnote .ms{font-size:16px;margin-top:1px}
 .d-foot{border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;gap:12px;background:var(--surface)}
@@ -244,6 +251,22 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
 .urow:last-child{border-bottom:0}
 .urow b{font-weight:500}.urow span{font-size:12.5px;color:var(--text-2)}
 .modal footer{display:flex;justify-content:flex-end;gap:12px;padding:14px 24px;border-top:1px solid var(--border)}
+.guide{border-top:1px solid var(--border);padding-top:10px}
+.guide>summary{cursor:pointer;font-size:10.5px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);list-style:none;display:flex;gap:6px;align-items:center}
+.guide>summary::-webkit-details-marker{display:none}
+.guide>summary .ms{font-size:16px;transition:transform .15s}
+.guide[open]>summary .ms{transform:rotate(90deg)}
+.g-scroll{overflow-x:auto;margin-top:10px}
+.gtab{width:100%;min-width:760px;border-collapse:collapse;font-size:12.5px}
+.gtab th{background:var(--surface-2);font-size:12px;padding:8px 12px;color:var(--text-2)}
+.gtab td{padding:8px 12px;vertical-align:top;font-size:12.5px;border-bottom:1px solid var(--border)}
+.gtab tbody tr:hover td{background:none}
+.gtab td:first-child{font-weight:500;width:22%}
+.gtab .na{color:var(--text-3)}
+.scn{border:0;background:none;padding:0;font:inherit;font-weight:500;color:var(--blue);cursor:pointer;text-align:left}
+.scn:hover{text-decoration:underline}
+.gtab .d{display:block;color:var(--text-2)}
+.gnote{font-size:12px;color:var(--text-2);margin:8px 0 0}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:6px;display:flex;gap:8px;align-items:center;z-index:80;max-width:calc(100% - 32px)}
 .toast .ms{color:#6fd36d;font-size:18px}
 </style>
@@ -253,7 +276,7 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     <div class="rb-top">
       <div>
         <p class="rb-label">Prototype · Option B v2 · for flow testing</p>
-        <p class="rb-desc"><b>Archive tree</b> goes top to bottom: ticking an audience includes every audience below it. <b>Unarchive tree</b> goes bottom to top: ticking an archived audience includes its archived parents. Both live on the <b>Hierarchy tab</b>, support ticking several audiences at once, and tag only the exceptions.</p>
+        <p class="rb-desc"><b>Archive tree</b> covers the selected audience and every audience below it. It’s allowed only when nothing below is in use, checked from the bottom up. <b>Unarchive tree</b> brings back the selected audience and its archived parents, checked from the top down. In the tree, click a row to select it and click again to deselect.</p>
       </div>
       <div class="controls">
         <div class="seg" role="radiogroup" aria-label="Flow" id="flowSeg"></div>
@@ -261,6 +284,10 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
       </div>
     </div>
     <div class="status" id="status"></div>
+    <details class="guide" open><summary><span class="ms" aria-hidden="true">chevron_right</span>Audience types in this flow</summary>
+      <div class="g-scroll"><table class="gtab"><thead><tr><th>Audience type</th><th>Archive</th><th>Unarchive</th></tr></thead><tbody id="guideBody"></tbody></table></div>
+      <p class="gnote">Actions change the sample data, so use Reset data between runs. Over 200 audiences: Archive tree and Unarchive tree are disabled with “You can archive up to 200 audiences at a time.” The sample data doesn’t reach 200.</p>
+    </details>
   </section>
 
   <div class="frame-scroll"><div class="frame">
@@ -314,6 +341,7 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     {id:'g4',name:'Gold – High spenders',method:'Filtered list (Dynamic)',customers:4180,refreshed:'30 Sep 2026 6:58 PM',by:'Aman G',parent:'g2',f:[F.spend]},
     {id:'g5',name:'High spenders – Mumbai',method:'Filtered list (Dynamic)',customers:1320,refreshed:'30 Sep 2026 6:50 PM',by:'Aman G',parent:'g4',f:[F.city('Mumbai')],inUse:{kind:'Journey',name:'Gold renewal nudges'}},
     {id:'g6',name:'High spenders – Delhi',method:'Filtered list (Dynamic)',customers:1104,refreshed:'30 Sep 2026 6:50 PM',by:'Aman G',parent:'g4',f:[F.city('Delhi')]},
+    {id:'g10',name:'Delhi – Weekend app users',method:'Filtered list (Dynamic)',customers:312,refreshed:'30 Sep 2026 6:52 PM',by:'Aman G',parent:'g6',f:[F.weekend,F.app]},
     {id:'g7',name:'High spenders – Bengaluru',method:'Filtered list (Dynamic)',customers:980,refreshed:'12 Aug 2026 4:10 PM',by:'Aman G',parent:'g4',f:[F.city('Bengaluru')],archived:true},
     {id:'g8',name:'Copy of High spenders – Delhi',method:'Filtered list (Dynamic)',customers:1104,refreshed:'30 Sep 2026 6:51 PM',by:'Aman G',parent:'g4',f:[F.city('Delhi'),F.app]},
     {id:'g9',name:'India – Lapsed 90 days',method:'Filtered list (Dynamic)',customers:41022,refreshed:'29 Sep 2026 9:12 PM',by:'Rakesh T',parent:'g1',f:[F.lapsed]},
@@ -326,6 +354,9 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     {id:'k2',name:'Lapsed 2024 – Gold',method:'Filtered list (Dynamic)',customers:6120,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k1',f:[F.gold],archived:true},
     {id:'k3',name:'Lapsed 2024 – Silver',method:'Filtered list (Dynamic)',customers:21400,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k1',f:[{label:'Tier',value:'Include customers whose current tier is Silver'}],archived:true},
     {id:'k4',name:'Silver – SMS opt-in',method:'Filtered list (Dynamic)',customers:9870,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k3',f:[F.sms],archived:true},
+    {id:'k5',name:'Silver SMS – Mumbai',method:'Filtered list (Dynamic)',customers:2410,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k4',f:[F.city('Mumbai')],archived:true},
+    {id:'k6',name:'Silver SMS Mumbai – App users',method:'Filtered list (Dynamic)',customers:1180,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k5',f:[F.app],archived:true},
+    {id:'k7',name:'Silver SMS Mumbai – Weekend',method:'Filtered list (Dynamic)',customers:430,refreshed:'02 Feb 2026 10:00 AM',by:'Priya Pai',parent:'k6',f:[F.weekend],archived:true},
     {id:'s1',name:'Diwali split – Test',method:'Split list',customers:89,refreshed:'30 Sep 2026 7:24 PM',by:'Migration Managers',parent:null,f:[]},
     {id:'s2',name:'Diwali split – Control',method:'Split list',customers:87,refreshed:'30 Sep 2026 7:24 PM',by:'Migration Managers',parent:null,f:[]},
     {id:'s3',name:'Store walk-ins – September',method:'Filtered list (Dynamic)',customers:22870,refreshed:'30 Sep 2026 6:43 PM',by:'Amogh R',parent:null,f:[{label:'Store visits',value:'Include customers with at least 1 store visit In Sep 2026'}]},
@@ -333,18 +364,20 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     {id:'s5',name:'Realtime cart abandoners',method:'Filtered list (Static)',customers:null,refreshed:'30 Sep 2026 6:11 PM',by:'engageAutomationUser',parent:null,f:[]},
     {id:'s6',name:'Summer sale 2025',method:'Filtered list (Static)',customers:72000,refreshed:'30 Jun 2025 9:00 AM',by:'Amogh R',parent:null,f:[],archived:true}
   ];
-  const ORDER=['r1','s1','s2','g1','g2','s3','g3','g4','h1','g5','g6','g8','s4','h2','h4','h5','g9','s5','g7','h3','k1','k2','k3','k4','s6'];
-  const SCEN=[
-    ['h2','Festive buyers 2025 · clean branch, 1 child already archived'],
-    ['g3','Gold – App users · leaf audience'],
-    ['g4','Gold – High spenders · a child is used in a journey'],
-    ['g1','Members – India · deep branch, blocked by a journey'],
-    ['h1','Exclude fraud & suspended · top level, blocked by a promotion'],
-    ['k1','Lapsed members 2024 · archived top level'],
-    ['k4','Silver – SMS opt-in · archived leaf, 2 archived audiences above it'],
-    ['k3','Lapsed 2024 – Silver · archived, parent also archived'],
-    ['h3','Festive – Email opt-in · archived child, parent active']
+  const ORDER=['r1','s1','s2','g1','g2','s3','g3','g4','h1','g5','g6','g10','g8','s4','h2','h4','h5','g9','s5','g7','h3','k1','k2','k3','k4','k5','k6','k7','s6'];
+  const GUIDE=[
+    ['Standalone · no parent, no child',['s3','Archive from the ⋯ menu'],['s6','Unarchive from the ⋯ menu']],
+    ['Leaf · has a parent, no child',['g3','Archives only itself'],['h3','Parent is active, so only itself']],
+    ['Leaf at level 6',['g10','Archives only itself. Its 5 parents stay active.'],['k7','Brings back its 5 archived parents']],
+    ['Mid-level · has a parent and children',['h2','Itself and its children. 1 child is already archived.'],['k3','Brings back its archived parent. Children are optional.']],
+    ['Top level · tree 6 levels deep',['r1','10 audiences. Blocked by a journey at level 5.'],['k1','Itself only. Click audiences below it to add them.']],
+    ['In use itself',['g5','Blocked on itself'],null],
+    ['Blocked deep below',['g1','Blocked 3 levels down'],null],
+    ['Top level, blocked by a promotion',['h1','Blocked by a loyalty promotion'],null],
+    ['Bulk · several branches',['g1','Deselect Members – India, then click Gold – App users and India – Lapsed 90 days'],['k2','Also click Silver SMS Mumbai – Weekend. Lapsed members 2024 is counted once.']]
   ];
+  const SCEN=[];
+  [1,2].forEach(c=>GUIDE.forEach(g=>{const x=g[c];if(x&&!SCEN.some(s=>s[0]===x[0]&&s[2]===c))SCEN.push([x[0],x[1],c])}));
   const TOTAL=7992312;
   const HT_A='Audiences in a hierarchy are archived together with the ones below them. Use Archive tree on the Hierarchy tab.';
   const HT_U='Audiences in a hierarchy are unarchived together with the ones above them. Use Unarchive tree on the Hierarchy tab.';
@@ -389,8 +422,15 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     seg.innerHTML=flows.map(f=>'<button type="button" role="radio" aria-checked="'+(cur===f[0])+'" class="'+(cur===f[0]?'on':'')+'" data-f="'+f[0]+'">'+f[1]+'</button>').join('');
     seg.querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.f));
     const sc=document.getElementById('scenario');
-    sc.innerHTML='<option value="">Open an audience…</option>'+SCEN.map(s=>'<option value="'+s[0]+'"'+(S.open===s[0]?' selected':'')+'>'+esc(s[1])+'</option>').join('');
-    sc.onchange=()=>{if(sc.value)openA(sc.value,'hierarchy')};
+    const opt=c=>SCEN.filter(s=>s[2]===c).map(s=>'<option value="'+s[0]+'"'+(S.open===s[0]?' selected':'')+'>'+esc(by(s[0]).name+' · '+s[1])+'</option>').join('');
+    sc.innerHTML='<option value="">Open an audience…</option><optgroup label="Archive">'+opt(1)+'</optgroup><optgroup label="Unarchive">'+opt(2)+'</optgroup>';
+    sc.onchange=()=>{if(sc.value)openScn(sc.value)};
+    const gb=document.getElementById('guideBody');
+    if(!gb.innerHTML){
+      const cell=x=>x?'<td><button class="scn" type="button" data-scn="'+x[0]+'">'+esc(by(x[0]).name)+'</button><span class="d">'+esc(x[1])+'</span></td>':'<td class="na">Not applicable. Nothing can use an archived audience.</td>';
+      gb.innerHTML=GUIDE.map(g=>'<tr><td>'+esc(g[0])+'</td>'+cell(g[1])+cell(g[2])+'</tr>').join('');
+      gb.querySelectorAll('[data-scn]').forEach(b=>b.onclick=()=>{openScn(b.dataset.scn);document.querySelector('.frame-scroll').scrollIntoView({block:'start'})});
+    }
     let where,selTxt='None',pill=['idle','Nothing selected'];
     if(S.open){
       const a=by(S.open),p=plan();
@@ -414,6 +454,7 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     else openA(S.open||'h2','hierarchy');
     render();}
   function openA(id,tab){closeMenu();S.open=id;S.node=id;S.tab=tab;S.preview=false;S.rowMenu=null;S.treeQ='';S.view=by(id).archived?'archived':'active';S.flow=S.view==='archived'?'archived':'listing';render();}
+  function openScn(id){openA(id,inH(by(id))?'hierarchy':'details')}
   function closeA(){S.open=null;S.preview=false;render();}
 
   // ── listing ──
@@ -498,34 +539,35 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
   function hierarchy(a){
     const p=plan(),r=root(a),arch=p.mode==='archive',pv=S.preview;
     const eff=new Set(p.ids), skip=new Set(p.skipped);
+    const path=new Set();if(pv)p.blocked.forEach(id=>ancestors(id).forEach(x=>{if(eff.has(x))path.add(x)}));
     const q=S.treeQ.trim().toLowerCase();
     const visible=id=>{if(!q)return true;const n=by(id);return n.name.toLowerCase().includes(q)||below(id).some(x=>by(x).name.toLowerCase().includes(q))};
     const walk=n=>{
       if(!visible(n.id))return '';
       const ks=kids(n.id), open=!S.collapsed.has(n.id)||pv||q;
-      const eligible=pv&&n.archived===!arch, inSel=eff.has(n.id), imp=p.implied.get(n.id), blk=inSel&&!!n.inUse&&arch;
-      const cls='trow'+(!pv&&n.id===S.node?' selected':'')+(n.archived?' archived':'')+(inSel?' pick':'')+(blk?' blocked':'')+(q&&n.name.toLowerCase().includes(q)?' match':'');
+      const eligible=pv&&n.archived===!arch, inSel=pv&&eff.has(n.id), imp=pv?p.implied.get(n.id):null, mine=inSel&&!imp, blk=inSel&&arch&&!!n.inUse;
+      const cls='trow'+(!pv&&n.id===S.node?' selected':'')+(n.archived?' archived':'')+(inSel?' pick':'')+(mine?' mine':'')+(imp?' implied':'')+(blk?' blocked':'')+(path.has(n.id)&&!mine?' path':'')+(pv&&eligible&&!imp?' clickable':'')+(pv&&!eligible?' inert':'')+(q&&n.name.toLowerCase().includes(q)?' match':'');
       let tags='';
       if(pv&&n.id===a.id) tags+='<span class="tag view">Opened</span>';
       if(n.inUse&&!n.archived) tags+='<span class="tag use tipw" tabindex="0"><span class="ms">block</span>In use · '+esc(n.inUse.kind)+'<span class="tip right" role="tooltip">Used in the '+esc(n.inUse.kind.toLowerCase())+' '+esc(n.inUse.name)+'.</span></span>';
       if(pv&&arch){
-        if(skip.has(n.id)) tags+='<span class="tag arc">Already archived · skipped</span>';
-        else if(n.archived) tags+='<span class="tag arc">Archived</span>';
+        if(n.archived) tags+='<span class="tag arc">'+(skip.has(n.id)?'Already archived':'Archived')+'</span>';
         else if(p.context.has(n.id)) tags+='<span class="tag stay">Stays active</span>';
       } else if(pv){
-        if(p.context.has(n.id)) tags+='<span class="tag stay">Already active</span>';
-        else if(n.archived&&!inSel) tags+='<span class="tag arc">Archived</span>';
+        if(!n.archived) tags+=p.context.has(n.id)?'<span class="tag stay">Already active</span>':'';
+        else if(!inSel) tags+='<span class="tag arc">Archived</span>';
       } else if(n.archived) tags+='<span class="tag arc">Archived</span>';
-      let cb='';
-      if(pv){
-        if(!eligible) cb='<span class="tcb" aria-hidden="true"></span>';
-        else if(imp) cb='<span class="tcb tipw" tabindex="0"><input type="checkbox" checked disabled aria-label="'+esc(n.name)+' is included"><span class="tip" role="tooltip">'+(arch?'Included because '+esc(by(imp).name)+' is selected. Audiences below a selected audience are archived with it.':'Included because '+esc(by(imp).name)+' is selected. An unarchived audience needs an active parent.')+'</span></span>';
-        else cb='<span class="tcb"><input type="checkbox" data-pick="'+n.id+'" id="pick-'+n.id+'" aria-label="Select '+esc(n.name)+'"'+(inSel?' checked':'')+'></span>';
+      let btn, tip='';
+      if(!pv) btn='<button class="tn" type="button" data-node="'+n.id+'">'+esc(n.name)+'</button>';
+      else if(imp){
+        tip='<span class="tip" role="tooltip" id="why-'+n.id+'">Included because '+esc(by(imp).name)+' is selected. '+(arch?'Audiences below a selected audience are archived with it.':'An unarchived audience needs an active parent.')+'</span>';
+        btn='<button class="tn" type="button" aria-disabled="true" aria-describedby="why-'+n.id+'">'+esc(n.name)+'</button>';
       }
-      const nameClick=pv?(eligible&&!imp?' data-pickname="'+n.id+'"':' disabled'):' data-node="'+n.id+'"';
-      let out='<li role="treeitem" aria-level="'+depth(n)+'"'+(ks.length?' aria-expanded="'+open+'"':'')+(pv?' aria-selected="'+inSel+'"':'')+'><div class="'+cls+'">'+
-        '<button class="caret'+(ks.length?'':' leaf')+'" type="button" data-tog="'+n.id+'" aria-label="'+(open?'Collapse':'Expand')+' '+esc(n.name)+'"'+(ks.length&&!pv?'':' tabindex="-1"')+'><span class="ms">'+(open?'arrow_drop_down':'arrow_right')+'</span></button>'+cb+
-        '<button class="tn" type="button"'+nameClick+'>'+esc(n.name)+'</button><span class="tags">'+tags+'</span></div>';
+      else if(eligible) btn='<button class="tn" type="button" data-row="'+n.id+'" aria-pressed="'+inSel+'">'+esc(n.name)+'</button>';
+      else btn='<button class="tn" type="button" disabled>'+esc(n.name)+'</button>';
+      let out='<li role="treeitem" aria-level="'+depth(n)+'"'+(ks.length?' aria-expanded="'+open+'"':'')+(pv?' aria-selected="'+inSel+'"':'')+'><div class="'+cls+'" data-id="'+n.id+'">'+
+        '<button class="caret'+(ks.length?'':' leaf')+'" type="button" data-tog="'+n.id+'" aria-label="'+(open?'Collapse':'Expand')+' '+esc(n.name)+'"'+(ks.length&&!pv?'':' tabindex="-1"')+'><span class="ms">'+(open?'arrow_drop_down':'arrow_right')+'</span></button>'+
+        btn+'<span class="tags">'+tags+'</span>'+tip+'</div>';
       if(ks.length&&open){const inner=ks.map(walk).join('');if(inner)out+='<ul role="group">'+inner+'</ul>';}
       return out+'</li>';
     };
@@ -533,7 +575,7 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     let action='';
     if(!pv){
       const label=arch?'Archive tree':'Unarchive tree',ic=arch?'archive':'unarchive';
-      const tip=arch&&p.ids.length>LIMIT?'You can archive up to 200 audiences at a time.':null;
+      const tip=p.ids.length>LIMIT?'You can '+(arch?'archive':'unarchive')+' up to 200 audiences at a time.':null;
       action=tip?'<span class="tipw" tabindex="0"><button class="btn secondary" type="button" disabled><span class="ms">'+ic+'</span>'+label+'</button><span class="tip right" role="tooltip">'+tip+'</span></span>':'<button class="btn secondary" type="button" id="treeAct"><span class="ms">'+ic+'</span>'+label+'</button>';
     }
     let h='<div class="h-grid"><div class="h-left"><div class="h-tools"><label class="search"><span class="ms">search</span><input id="treeSearch" type="search" placeholder="Search" aria-label="Search the hierarchy" value="'+esc(S.treeQ)+'"></label><span class="spacer"></span>'+action+'</div>'+tree+'</div><div class="h-right">';
@@ -542,28 +584,24 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
       return h+'<p class="fc-title">Filter conditions in <b>'+esc(n.name)+'</b></p>'+filterBox(n)+'</div></div>';
     }
     const n=p.ids.length, single=p.picks.size===1&&p.picks.has(a.id);
-    const row=(id,extra)=>{const b=by(id);return '<div class="prow"><span>'+(extra?'<b style="font-weight:500">'+esc(b.name)+'</b>'+extra:esc(b.name))+'</span><span class="lvl">Level '+depth(b)+'</span></div>'};
-    const list=(title,ids,openIt,fn)=>'<details class="plist"'+(openIt?' open':'')+'><summary><span class="ms" aria-hidden="true">chevron_right</span><span class="lbl">'+title+' ('+ids.length+')</span></summary>'+ids.map(fn||(id=>row(id))).join('')+'</details>';
+    const row=(id,extra,muted)=>{const b=by(id);return '<div class="prow"><span'+(muted?' style="color:var(--text-3)"':'')+'>'+(extra?'<b style="font-weight:500">'+esc(b.name)+'</b>'+extra:esc(b.name))+'</span><span class="lvl">Level '+depth(b)+'</span></div>'};
+    const sec=(title,ids,fn,empty)=>'<div class="plist"><h4>'+title+' ('+ids.length+')</h4>'+(ids.length?ids.map(fn).join(''):'<div class="pempty">'+empty+'</div>')+'</div>';
     h+='<div class="prev">';
     if(arch){
       h+='<h3>Archive tree</h3>';
       if(p.blocked.length) h+='<div class="banner amber" role="status"><span class="ms">warning</span><p>'+(single?'<b>'+esc(a.name)+'</b> can’t':'This selection can’t')+' be archived yet. '+pl(p.blocked.length,'audience','audiences')+' in '+(single?'this tree':'it')+' '+(p.blocked.length===1?'is':'are')+' in use.</p></div>';
-      else if(!n) h+='<div class="banner info" role="status"><span class="ms">info</span><p>Select the audiences to archive. Every audience below a selected one is included.</p></div>';
-      else h+='<div class="banner info" role="status"><span class="ms">info</span><p>'+(single?'Archiving <b>'+esc(a.name)+'</b>'+(n>1?' also archives '+the(n-1,'audience')+' below it.':'.')+(a.parent?' Audiences above it stay active.':''):pl(n,'audience','audiences')+' will be archived: the ones you selected and every audience below them.')+'</p></div>';
-      if(p.blocked.length) h+=list('In use · blocks archive',p.blocked,true,id=>{const b=by(id);return row(id,'<span class="why">'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span>')});
-      if(n) h+=list('Selected to archive',p.ids,false);
-      if(p.skipped.length) h+=list('Already archived · skipped',p.skipped,false,id=>'<div class="prow"><span style="color:var(--text-3)">'+esc(by(id).name)+'</span><span class="lvl">Level '+depth(by(id))+'</span></div>');
-      if(p.blocked.length) h+='<button class="btn link" type="button" id="viewUse">View what’s in use</button>';
+      else if(!n) h+='<div class="banner info" role="status"><span class="ms">info</span><p>Click the audiences to archive. Every audience below a selected one is included.</p></div>';
+      else h+='<div class="banner info" role="status"><span class="ms">info</span><p>'+(single?(n>1?'Archiving <b>'+esc(a.name)+'</b> also archives '+the(n-1,'audience')+' below it.':'<b>'+esc(a.name)+'</b> moves to Archived.')+(a.parent?' Audiences above it stay active.':''):pl(n,'audience','audiences')+' will be archived: the ones you selected and every audience below them.')+'</p></div>';
+      h+=sec('In use · blocks archive',p.blocked,id=>{const b=by(id);return row(id,'<span class="why">'+esc(b.inUse.kind)+': '+esc(b.inUse.name)+'</span>')},'No audiences in use.');
+      h+=sec('Already archived',p.skipped,id=>row(id,null,true),'No archived audiences below your selection.');
     } else {
-      const req=p.ids.filter(id=>p.implied.has(id)), sel=p.ids.filter(id=>!p.implied.has(id));
+      const req=p.ids.filter(id=>p.implied.has(id)), ctx=dfs(r.id).filter(id=>p.context.has(id));
+      const more=below(a.id).filter(id=>by(id).archived&&!eff.has(id)).length;
       h+='<h3>Unarchive tree</h3>';
-      if(!n) h+='<div class="banner info" role="status"><span class="ms">info</span><p>Select the archived audiences to unarchive. Their archived parents are included.</p></div>';
-      else h+='<div class="banner info" role="status"><span class="ms">info</span><p>'+(single?(req.length?'Unarchiving <b>'+esc(a.name)+'</b> also unarchives '+the(req.length,'archived audience')+' above it, so it has an active parent.':'<b>'+esc(a.name)+'</b> moves back to Active.'):pl(n,'audience','audiences')+' will be unarchived: the ones you selected and their archived parents.')+'</p></div>';
-      h+='<p class="pnote"><span class="ms">info</span><span>Customer counts stay as of the last refresh until you refresh them. Journeys that used these audiences before won’t reconnect automatically.</span></p>';
-      if(req.length) h+=list('Required · above a selected audience',req,true);
-      if(sel.length) h+=list('Selected to unarchive',sel,true);
-      const more=below(a.id).filter(id=>by(id).archived&&!eff.has(id));
-      if(more.length) h+='<button class="btn link" type="button" id="pickBelow">Also select '+the(more.length,'archived audience')+' below '+esc(a.name)+'</button>';
+      if(!n) h+='<div class="banner info" role="status"><span class="ms">info</span><p>Click the archived audiences to unarchive. Their archived parents are included.</p></div>';
+      else h+='<div class="banner info" role="status"><span class="ms">info</span><p>'+(single?(req.length?'Unarchiving <b>'+esc(a.name)+'</b> also unarchives '+the(req.length,'archived audience')+' above it, so it has an active parent.':'<b>'+esc(a.name)+'</b> moves back to Active.'):pl(n,'audience','audiences')+' will be unarchived: the ones you selected and their archived parents.')+(single&&more?' Click archived audiences below it to add them.':'')+'</p></div>';
+      h+=sec('Archived parents · unarchived with it',req,id=>row(id),a.parent?'None. Its parent is already active.':'None. It’s a top-level audience.');
+      h+=sec('Already active',ctx,id=>row(id),a.parent?'None. No audience above it is active.':'None. It’s a top-level audience.');
     }
     return h+'</div></div></div>';
   }
@@ -586,10 +624,8 @@ details.plist[open]>summary .ms{transform:rotate(90deg)}
     r.querySelectorAll('[data-na]').forEach(b=>b.onclick=()=>toast('Not part of this prototype','info'));
     const ts=r.querySelector('#treeSearch');if(ts)ts.oninput=()=>{S.treeQ=ts.value;render();const n=document.getElementById('treeSearch');n.focus();n.setSelectionRange(n.value.length,n.value.length)};
     const ta=r.querySelector('#treeAct');if(ta)ta.onclick=()=>{S.preview=true;S.picks=new Set([S.open]);S.treeQ='';render()};
-    const toggle=id=>{S.picks.has(id)?S.picks.delete(id):S.picks.add(id);render();const el=document.getElementById('pick-'+id);if(el)el.focus()};
-    r.querySelectorAll('[data-pick]').forEach(cb=>cb.onchange=()=>toggle(cb.dataset.pick));
-    r.querySelectorAll('[data-pickname]').forEach(b=>b.onclick=()=>toggle(b.dataset.pickname));
-    const pb=r.querySelector('#pickBelow');if(pb)pb.onclick=()=>{below(S.open).forEach(id=>{if(by(id).archived)S.picks.add(id)});render()};
+    const toggle=id=>{S.picks.has(id)?S.picks.delete(id):S.picks.add(id);render();const el=document.querySelector('[data-row="'+id+'"]');if(el)el.focus()};
+    r.querySelectorAll('.trow.clickable').forEach(row=>row.onclick=e=>{if(e.target.closest('.caret,.tag'))return;toggle(row.dataset.id)});
     const vu2=r.querySelector('#viewUse2');if(vu2)vu2.onclick=inUse;
     const cp=r.querySelector('#cancelPrev');if(cp)cp.onclick=()=>{S.preview=false;render()};
     const vu=r.querySelector('#viewUse');if(vu)vu.onclick=inUse;

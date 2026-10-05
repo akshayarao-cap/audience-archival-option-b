@@ -13,8 +13,8 @@ Open `index.html` in a browser.
 - **Netlify:** import this repo. `netlify.toml` already sets no build command and publish
   directory `.`, so accept the defaults. Each push to `main` redeploys.
 
-The first version of the flow (red preview, top-down unarchive) is kept at the git tag
-`v1-original`.
+Earlier versions are kept as git tags: `v1-original` (red preview, top-down unarchive)
+and `v2` (tick-box selection).
 
 ## Update
 Replace `index.html` with the new export, then commit and push. The live link updates
